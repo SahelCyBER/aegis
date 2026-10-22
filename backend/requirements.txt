@@ -57,3 +57,7 @@ PyYAML>=6.0
 
 # Honey-AI Deception — realistic fake data generation
 Faker>=24.0
+
+# eMudhra/emSign CA key compromise (GHSA-6q48-6c7w-9gw2): bundles before
+# 2026.10.19 still trust the affected roots.
+certifi>=2026.10.19
