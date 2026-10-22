@@ -314,6 +314,7 @@ class OpenRouterClient:
                 result = await self._ai_manager.chat(
                     messages=full_messages,
                     model=provider_model,
+                    model_provider="omniroute" if provider_model else None,
                     temperature=temperature,
                     max_tokens=max_tokens,
                     task_type=task_type,

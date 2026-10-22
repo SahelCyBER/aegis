@@ -68,6 +68,7 @@ _KNOWN_SAFE_IPS = frozenset({
 
 # Attacker allow-list loaded once at module load from AEGIS_ATTACKER_IPS.
 from app.config import settings as _settings
+from app.core.auth_endpoints import is_credential_attempt
 
 
 def _is_truncated(fp, inode: int, st) -> bool:
@@ -961,30 +962,12 @@ class LogWatcher:
         event_method = _event_attr(event, "request_method") or _event_attr(event, "method")
         is_dashboard_request = _is_safe_path(line, event_path)
 
-        # Defense-in-depth: a 401 that event_normalizer already classified as a
-        # benign session-check (event_type http_request, not http_auth_failure)
-        # must never advance the brute-force counter, even if the raw line slips
-        # past _SAFE_PATHS substring matching. Login attempts are POSTs; a
-        # non-POST 401 on an auth namespace is a session-check / token refresh.
-        is_session_check_401 = False
-        if isinstance(event_path, str):
-            _bare_path = event_path.split("?", 1)[0]
-            _is_auth_ns = _bare_path.startswith("/api/v1/auth/") or _bare_path.startswith("/auth/")
-            _is_login = _bare_path.startswith("/api/v1/auth/login") or _bare_path.startswith("/api/v1/login")
-            _method = (event_method or "").upper()
-            if _is_auth_ns and not _is_login and _method and _method != "POST":
-                is_session_check_401 = True
-        if event_type in ("http_request", "session_check_401"):
-            # Normalizer already ruled this benign.
-            is_session_check_401 = is_session_check_401 or (
-                isinstance(event_path, str)
-                and (
-                    event_path.startswith("/api/v1/auth/me")
-                    or event_path.startswith("/api/v1/auth/refresh")
-                    or event_path.startswith("/api/v1/auth/logout")
-                    or event_path.startswith("/api/v1/auth/session")
-                )
-            )
+        # Only a request that submits credentials to an auth endpoint can be a
+        # guess. A 401 anywhere else is an expired session (a browser tab still
+        # polling with a dead token), and several of those behind one office
+        # NAT used to cross the threshold and get the whole office blocked.
+        # Same helper as event_normalizer, so the two detectors cannot drift.
+        is_credential_401 = is_credential_attempt(event_method, event_path)
 
         # ----- Port-scan tracker --------------------------------------
         # Prefer event.target_port (so we can tell port 22 / SSH from
@@ -1023,8 +1006,15 @@ class LogWatcher:
         #   port 22   (real sshd)    — 5 in 60s   = CRITICAL
         #   port 8000 / 80 / 443     — 20 in 60s  = HIGH (HTTP API)
         #   dashboard paths          — skip entirely
+        # SSH surfaces carry no HTTP method/path, so the credential-endpoint
+        # gate applies to the HTTP branch only.
         is_401 = (status_code == 401) or (" 401 " in line)
-        if is_401 and not is_dashboard_request and not is_session_check_401:
+        is_ssh_surface = port_for_scan in (22, 2222)
+        if (
+            is_401
+            and not is_dashboard_request
+            and (is_ssh_surface or is_credential_401)
+        ):
             # Port-aware threshold + severity selection.
             if port_for_scan == 2222:
                 threshold, severity_str, label = 1, "critical", "ssh_honeypot_brute"

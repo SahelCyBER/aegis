@@ -13,17 +13,20 @@ condition:
   event_type: http_request
   filter:
     path_contains:
-    - /api/admin
+    - /manager/text/
+    - /manager/html/
   count_threshold: 10
   time_window_seconds: 300
   group_by: source_ip
 entityMappings:
 - type: IP
   field: source_ip
-description: 'Detects attempted exploitation of CVE-2026-22769 in Dell RecoverPoint for VMs
-  (CVSS 8.8). Behavioural rule. The exploit payload for this CVE is not visible in the URL
-  -- it travels in the request body or a header, which this platform cannot read -- so the
-  rule measures rhythm instead of signature: ten or more requests to this endpoint from one
-  source in five minutes is consistent with automated payload iteration, not with a real user.'
+description: Detects the exploitation path of CVE-2026-22769 in Dell RecoverPoint for Virtual Machines
+  (hardcoded Tomcat Manager credential, CVSS 10.0, exploited as a zero-day by UNC6201). Attackers authenticate
+  to the Tomcat Manager and deploy a WAR through PUT /manager/text/deploy. Ten or more requests to the
+  Tomcat Manager interface from one source in five minutes is automated use of that surface. The rule
+  used to match any path containing /api/admin, which is every legitimate admin panel and auto-blocked
+  the operator; it now keys on the Tomcat Manager paths named in the advisories.
 references:
 - https://www.dell.com/support/kbdoc/en-us/000426773/dsa-2026-079
+- https://leargassecurity.com/2026/02/20/critical-dell-recoverpoint-vulnerability-cve-2026-22769-active-exploitation-and-patch-guidance/

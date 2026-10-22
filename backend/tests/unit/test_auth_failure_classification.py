@@ -72,8 +72,11 @@ async def test_credential_brute_force_on_a_login_endpoint_is_detected(monkeypatc
     assert "http_auth_brute_force" in fired, f"40 POST 401 to {path} fired only {fired}"
 
 
-def test_classification_follows_the_method():
-    get = normalize(_line("sid-backend", "45.13.12.9", "GET", "/api/x"), source="sid-backend")
-    post = normalize(_line("sid-backend", "45.13.12.9", "POST", "/api/x"), source="sid-backend")
+def test_classification_follows_the_method_and_the_endpoint():
+    get = normalize(_line("sid-backend", "45.13.12.9", "GET", "/api/auth/login"), source="sid-backend")
+    stale_post = normalize(_line("sid-backend", "45.13.12.9", "POST", "/api/x"), source="sid-backend")
+    login = normalize(_line("sid-backend", "45.13.12.9", "POST", "/api/auth/login"), source="sid-backend")
     assert get["event_type"] == "http_request"
-    assert post["event_type"] == "http_auth_failure"
+    # A POST that is not a credential submission is an expired session retrying.
+    assert stale_post["event_type"] == "http_request"
+    assert login["event_type"] == "http_auth_failure"

@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.25] - 2026-10-22
+
+### Fixed — AEGIS was blocking its own operators
+- HTTP brute force now counts only requests that submit credentials to an
+  auth endpoint. Expired sessions polling the API from several browsers
+  behind one office NAT used to cross the threshold and get the office
+  blocked. SSH thresholds are unchanged.
+- Behavioural CVE rules that matched generic paths on request rhythm alone
+  are scoped to the product's real URLs (Dell RecoverPoint, ScreenConnect,
+  Kentico, Kestra, Cobalt Strike default URIs, Kubernetes API) or demoted to
+  low when the advisories name no URL. The RecoverPoint rule fired on any
+  `/api/admin` panel. Validated by replaying a week of real traffic.
+
+### Fixed — dashboard and AI
+- The IP-block 403 now carries CORS headers for allowed origins, and the
+  dashboard says the network is blocked instead of showing a CORS error.
+- The Ask-AI chat returned 404: its router was mounted without `/api/v1`
+  since v1.1.0.
+- AI fallback: a gateway-specific model id was forwarded to the next
+  provider, which rejected it, so a down primary took the whole chain with
+  it. Each provider now gets its own model, and a total AI outage is logged
+  as one rate-limited ERROR.
+
 ## [1.7.24] - 2026-10-22
 
 ### Fixed — honeypot blocks were refused by the firewall agent

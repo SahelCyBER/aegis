@@ -37,6 +37,11 @@ _INFRA_QUARANTINE_THRESHOLD = int(
     os.environ.get("AEGIS_AI_INFRA_QUARANTINE_THRESHOLD", "2")
 )
 
+# Minimum seconds between "all providers failed" ERROR lines. A dead AI stack
+# fails every call (triage runs at event volume), so one line per call would
+# flood the log; once per window is enough to be seen.
+_ALL_FAILED_LOG_INTERVAL_SECONDS = 300
+
 _QUOTA_ERROR_MARKERS = (
     "402",
     "free_tier",
@@ -200,6 +205,21 @@ class AIManager:
         # (see _is_infra_error). Reset to 0 on any success; drives the
         # infra-quarantine path independent of the hard-quota path.
         self._infra_failures: dict[str, int] = {}
+        # Monotonic time of the last "all providers failed" ERROR line, and
+        # last success/failure bookkeeping for introspection.
+        self._last_all_failed_log: float | None = None
+        self.last_success_at: float | None = None
+        self.last_error: str | None = None
+        self.last_error_at: float | None = None
+
+    def status(self) -> dict:
+        """Cheap AI health snapshot (no network)."""
+        return {
+            "ai_last_success_at": self.last_success_at,
+            "ai_last_error": self.last_error,
+            "ai_last_error_at": self.last_error_at,
+            "quarantined": sorted(n for n in list(self._quarantined) if self._is_quarantined(n)),
+        }
 
     def _is_quarantined(self, name: str) -> bool:
         until = self._quarantined.get(name)
@@ -280,10 +300,17 @@ class AIManager:
         max_tokens: int = 4096,
         task_type: str = "general",
         client_settings: Optional[dict] = None,
+        model_provider: str | None = None,
     ) -> dict:
         """Send a chat request through the active (or task-routed) provider.
 
         Tries the designated provider first, then walks the fallback chain.
+
+        Model ids are provider-specific, so an explicit ``model`` is only ever
+        sent to ONE provider: ``model_provider`` if given, else the first
+        provider tried. Every other provider in the chain uses its own
+        task default (or its built-in default). Forwarding e.g. an OmniRoute
+        routing name to OpenRouter just earns a 400.
         """
         # Short-circuit when AI is disabled. Accepts {disabled, offline, off, none}
         # so existing deployments using AEGIS_AI_MODE=offline keep working.
@@ -325,9 +352,10 @@ class AIManager:
                 continue
 
             # Build a list of candidate models for this provider. If the
-            # caller passed `model`, that's the only candidate. Otherwise we
+            # caller passed `model` for THIS provider, that's the only
+            # candidate. Otherwise we
             # consult task_model_defaults which may yield a list.
-            if model:
+            if model and pname == (model_provider or primary_name):
                 model_candidates: list[str | None] = [model]
             else:
                 default_entry = self.task_model_defaults.get(task_type, {}).get(pname)
@@ -351,6 +379,7 @@ class AIManager:
                     if not result.get("model") and effective_model:
                         result["model"] = effective_model
                     self._infra_failures.pop(pname, None)
+                    self.last_success_at = time.time()
                     return result
                 except Exception as exc:
                     logger.warning(
@@ -389,7 +418,21 @@ class AIManager:
             if provider_exhausted:
                 continue
 
-        logger.error(f"All providers failed for task_type={task_type}: {last_error}")
+        self.last_error = f"{last_error}" if last_error else "no usable provider"
+        self.last_error_at = time.time()
+        now = time.monotonic()
+        if (
+            self._last_all_failed_log is None
+            or now - self._last_all_failed_log >= _ALL_FAILED_LOG_INTERVAL_SECONDS
+        ):
+            self._last_all_failed_log = now
+            logger.error(
+                f"All AI providers failed (tried={providers_to_try}, "
+                f"quarantined={[p for p in providers_to_try if self._is_quarantined(p)]}) "
+                f"for task_type={task_type}: {last_error}. AEGIS is running on "
+                f"local heuristics; further occurrences suppressed for "
+                f"{_ALL_FAILED_LOG_INTERVAL_SECONDS}s"
+            )
         return {
             "content": f"AI analysis unavailable: {last_error}",
             "tokens_used": 0,
@@ -504,7 +547,7 @@ def init_default_providers(
     if omniroute_url:
         ai_manager.register_provider(
             "omniroute",
-            OmniRouteProvider(api_key="omniroute-local", base_url=omniroute_url.rstrip("/")),
+            OmniRouteProvider(api_key="omniroute-local", base_url=omniroute_url.rstrip("/")),  # pragma: allowlist secret
         )
         # Prepend to the fallback chain and make it the active primary.
         ai_manager.fallback_chain = ["omniroute"] + [
