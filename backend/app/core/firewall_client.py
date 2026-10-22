@@ -93,10 +93,36 @@ class FirewallClient:
             logger.warning(f"Firewall get_blocked failed: {e}")
             return []
 
-    async def block_ip(self, ip: str) -> dict:
+    async def block_ip(
+        self,
+        ip: str,
+        *,
+        reason: Optional[str] = None,
+        threat_type: Optional[str] = None,
+        severity: Optional[str] = None,
+        force: bool = False,
+    ) -> dict:
+        """Ask the Pi agent to block `ip`.
+
+        The Pi's evidence gate DEFERS blocks whose threat text carries no exploit
+        signature and with fewer than BLOCK_MIN_ATTEMPTS sightings, so callers
+        should say why they block (reason/threat_type/severity). `force=True`
+        bypasses the gate for blocks AEGIS already decided (approved response
+        actions, playbooks, operator blocks). Only non-None fields are sent, so
+        `block_ip(ip)` still posts just {"ip": ip}.
+        """
+        payload: dict = {"ip": ip}
+        if reason:
+            payload["reason"] = reason
+        if threat_type:
+            payload["threat_type"] = threat_type
+        if severity:
+            payload["severity"] = str(severity)
+        if force:
+            payload["force"] = True
         try:
             async with httpx.AsyncClient(timeout=TIMEOUT, headers=_auth_headers()) as client:
-                resp = await client.post(f"{FIREWALL_API}/block", json={"ip": ip})
+                resp = await client.post(f"{FIREWALL_API}/block", json=payload)
                 resp.raise_for_status()
                 return {"success": True, "response": resp.json()}
         except Exception as e:
