@@ -15,7 +15,9 @@
  *      Accept-Encoding get "gzip, deflate", so well-behaved servers never answer
  *      with br. A malicious server that sends br anyway hits (1) and the request
  *      fails instead of decoding the payload.
- *   3. Incoming HTTP requests with Content-Encoding: br are answered 415 before
+ *   3. Outbound http/https requests (axios, got...) have br stripped from
+ *      Accept-Encoding, so they keep working against servers that support it.
+ *   4. Incoming HTTP requests with Content-Encoding: br are answered 415 before
  *      any body parser can inflate them.
  * Set AEGIS_BROTLI_GUARD=off to disable without removing the preload.
  */
@@ -64,6 +66,36 @@ if (typeof globalThis.fetch === 'function') {
     return origFetch.call(this, input, init);
   };
 }
+
+// Outbound http/https (axios, got, node-fetch...): strip "br" from any
+// Accept-Encoding the library sets, so servers answer gzip/deflate instead of
+// Brotli and the request keeps working. A server that sends br anyway hits the
+// refused decoder above and that request fails cleanly.
+function stripBr(value) {
+  if (value == null) return value;
+  const parts = String(value).split(',').map((v) => v.trim()).filter((v) => v && !/^br(\s*;.*)?$/i.test(v));
+  return parts.length ? parts.join(', ') : 'identity';
+}
+function fixHeaders(h) {
+  if (!h || typeof h !== 'object') return;
+  for (const k of Object.keys(h)) if (k.toLowerCase() === 'accept-encoding') h[k] = stripBr(h[k]);
+}
+const https = require('https');
+for (const mod of [http, https]) {
+  for (const fn of ['request', 'get']) {
+    const orig = mod[fn];
+    const wrapped = function (...args) {
+      for (const a of args) if (a && typeof a === 'object' && !(a instanceof URL)) fixHeaders(a.headers);
+      return orig.apply(this, args);
+    };
+    try { override(mod, fn, wrapped); } catch (_) { try { mod[fn] = wrapped; } catch (_) {} }
+  }
+}
+const origSetHeader = http.ClientRequest.prototype.setHeader;
+http.ClientRequest.prototype.setHeader = function (name, value) {
+  if (typeof name === 'string' && name.toLowerCase() === 'accept-encoding') value = stripBr(value);
+  return origSetHeader.call(this, name, value);
+};
 
 const origEmit = http.Server.prototype.emit;
 http.Server.prototype.emit = function (event, req, res) {
