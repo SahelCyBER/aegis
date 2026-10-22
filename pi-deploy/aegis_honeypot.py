@@ -25,6 +25,9 @@ LOG_FILE = os.environ.get("HONEYPOT_LOG", "/var/log/aegis/honeypot.log")
 FIREWALL_URL = os.environ.get("AEGIS_LOCAL_FW", "http://127.0.0.1:8765")
 AEGIS_API = os.environ.get("AEGIS_API_URL", "")
 AEGIS_API_KEY = os.environ.get("AEGIS_API_KEY", "")
+# Shared secret the firewall agent requires on POST /block (since v1.7.17).
+# Empty -> header omitted (compat with an agent that does not enforce it).
+FIREWALL_SECRET = os.environ.get("AEGIS_FIREWALL_SECRET", "")
 
 _SAFE_NETS = [
     ipaddress.ip_network("10.0.0.0/8"),
@@ -94,17 +97,36 @@ def _log_event(event):
 def _block_ip(ip, reason):
     if _is_internal(ip):
         return
-    body = json.dumps({"ip": ip, "reason": "honeypot:" + reason, "ttl": 86400}).encode()
+    # force: touching a decoy is deliberate, high-confidence evidence, so skip
+    # the agent's "2 sightings without an exploit signature" evidence gate.
+    # "duration" is the field IPRequest reads; "ttl" is kept for older agents.
+    body = json.dumps({
+        "ip": ip,
+        "reason": "honeypot:" + reason,
+        "threat_type": "honeypot",
+        "severity": "high",
+        "force": True,
+        "duration": 86400,
+        "ttl": 86400,
+    }).encode()
+    headers = {"Content-Type": "application/json"}
+    if FIREWALL_SECRET:
+        headers["X-AEGIS-FW-Auth"] = FIREWALL_SECRET
     req = urllib.request.Request(
         FIREWALL_URL + "/block",
         data=body,
-        headers={"Content-Type": "application/json"},
+        headers=headers,
         method="POST",
     )
     try:
         with urllib.request.urlopen(req, timeout=2) as resp:
             log.info("blocked %s reason=%s code=%s", ip, reason, resp.status)
-    except (urllib.error.URLError, socket.timeout) as e:
+    except urllib.error.HTTPError as e:
+        if e.code in (401, 403):
+            log.error("block %s REJECTED http=%s (check AEGIS_FIREWALL_SECRET)", ip, e.code)
+        else:
+            log.warning("block %s failed http=%s", ip, e.code)
+    except (urllib.error.URLError, socket.timeout, OSError) as e:
         log.warning("block %s failed: %s", ip, e)
 
 

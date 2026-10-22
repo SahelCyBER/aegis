@@ -134,6 +134,7 @@ pi-deploy/*
 !pi-deploy/aegis-firewall/
 !pi-deploy/aegis_honeypot.py
 !pi-deploy/aegis-honeypot.service
+!pi-deploy/README-honeypot.md
 !pi-deploy/newsyslog/
 !pi-deploy/utils/
 !pi-deploy/web-server-logger.py

@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.24] - 2026-10-22
+
+### Fixed — honeypot blocks were refused by the firewall agent
+- The Pi honeypot never sent `X-AEGIS-FW-Auth`, so since v1.7.17 every block
+  it asked for was rejected with 401. It now sends the shared secret
+  (`AEGIS_FIREWALL_SECRET`) plus `force`, threat type, severity and duration,
+  and logs a rejection as `REJECTED ... check AEGIS_FIREWALL_SECRET`.
+
+### Changed
+- `pi-deploy/README-honeypot.md` documents the recommended layout: the decoy
+  on its own Pi, forwarding blocks to the gateway Pi's agent.
+
+### Security
+- Require `certifi >= 2026.10.19` in the backend and the firewall agent,
+  which drops the compromised eMudhra/emSign roots (GHSA-6q48-6c7w-9gw2).
+
 ## [1.7.23] - 2026-10-22
 
 ### Fixed — confirmed blocks were deferred by the firewall agent

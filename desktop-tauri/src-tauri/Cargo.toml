@@ -1,6 +1,6 @@
 [package]
 name = "aegis_desktop"
-version = "1.7.23"
+version = "1.7.24"
 description = "AEGIS desktop app (Tauri)"
 authors = ["AEGIS"]
 license = "UNLICENSED"
