@@ -55,7 +55,15 @@ class ActiveResponder:
             return action.result
 
         executor = self._get_executor(action.action_type)
-        result = await executor(action.target, action.parameters)
+        params = action.parameters
+        if action.action_type == "block_ip":
+            # Hand the Pi the context the brain already has (see _block_ip).
+            params = dict(params or {})
+            params.setdefault(
+                "reason",
+                f"response action {action.action_type}: {(action.ai_reasoning or 'approved by AEGIS')[:200]}",
+            )
+        result = await executor(action.target, params)
 
         action.status = "executed" if result["success"] else "failed"
         action.result = result
@@ -141,7 +149,16 @@ class ActiveResponder:
         logger.warning(f"RESPONSE: Blocking IP {target} — executing real block")
 
         # 1. Block via external firewall (if AEGIS_FIREWALL_URL is configured)
-        firewall_result = await firewall_client.block_ip(target)
+        # force=True: the action already passed guardrails/approval, so the Pi's
+        # evidence gate must not second-guess it.
+        params = params or {}
+        firewall_result = await firewall_client.block_ip(
+            target,
+            reason=params.get("reason") or params.get("rule_id") or params.get("incident_title"),
+            threat_type=params.get("threat_type"),
+            severity=params.get("severity"),
+            force=True,
+        )
         logger.info(f"Firewall block result for {target}: {firewall_result}")
 
         # 2. Block locally via ip_blocker_service (blocked_ips.txt + in-memory set → 403 middleware)

@@ -669,7 +669,9 @@ class DoSShield:
         # (3) Pi per-IP DROP (existing path)
         try:
             from app.core.firewall_client import firewall_client
-            await firewall_client.block_ip(ip)
+            await firewall_client.block_ip(
+                ip, reason=f"dos:{reason}", threat_type="dos", force=True
+            )
         except Exception as exc:
             logger.error("dos_shield firewall block failed for %s: %s", ip, exc)
 

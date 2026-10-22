@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.23] - 2026-10-22
+
+### Fixed — confirmed blocks were deferred by the firewall agent
+- The firewall agent requires evidence before blocking (an exploit signature
+  or a repeat sighting). AEGIS sent only the IP, so blocks that had already
+  passed guardrails were deferred as "unclassified". The responder, playbooks
+  and the DoS shield now send reason, threat type, severity and `force`.
+
+### Changed — firewall agent in sync with production
+- The evidence gate (`AEGIS_BLOCK_MIN_ATTEMPTS`, default 2) and persisted
+  per-IP block reasons, previously only hot-patched on the device, are now in
+  `firewall-agent/`. The stale duplicate `pi-deploy/aegis-firewall/main.py`
+  is removed.
+
+### Security
+- Brotli guard (CVE-2026-111497) now also covers `https` and `http2` servers
+  and parses `Content-Encoding` robustly; new `test-node-brotli-guard.cjs`
+  (53 checks) passes on Node 20.10, 20.18, 22.15 and 25.6.
+- The honeypot unit template takes `AEGIS_API_URL`/`AEGIS_API_KEY` from a
+  root-only `EnvironmentFile` instead of inline values readable by any user.
+
+---
+
 ## [1.7.22] - 2026-10-22
 
 ### Added — virtual patch for Node.js CVE-2026-111497 (Brotli RCE)

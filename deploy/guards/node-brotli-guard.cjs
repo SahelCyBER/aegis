@@ -17,8 +17,8 @@
  *      fails instead of decoding the payload.
  *   3. Outbound http/https requests (axios, got...) have br stripped from
  *      Accept-Encoding, so they keep working against servers that support it.
- *   4. Incoming HTTP requests with Content-Encoding: br are answered 415 before
- *      any body parser can inflate them.
+ *   4. Incoming requests with Content-Encoding: br are answered 415 before any body
+ *      parser can inflate them (http, https and http2, compat and stream APIs).
  * Set AEGIS_BROTLI_GUARD=off to disable without removing the preload.
  */
 if (process.env.AEGIS_BROTLI_GUARD === 'off') return;
@@ -97,22 +97,79 @@ http.ClientRequest.prototype.setHeader = function (name, value) {
   return origSetHeader.call(this, name, value);
 };
 
-const origEmit = http.Server.prototype.emit;
-http.Server.prototype.emit = function (event, req, res) {
-  if (event === 'request' && req && req.headers) {
-    const ce = String(req.headers['content-encoding'] || '').toLowerCase();
-    if (ce.split(',').some((v) => v.trim() === 'br')) {
+// Incoming requests: true if any listed Content-Encoding coding is "br". Accepts a
+// string or an array of header values, any case, optional whitespace and q-params.
+function hasBr(value) {
+  if (value == null) return false;
+  const list = Array.isArray(value) ? value.join(',') : String(value);
+  return list.split(',').some((v) => v.split(';')[0].trim().toLowerCase() === 'br');
+}
+function warnRejected(what) {
+  try { process.emitWarning(`[aegis-guard] rejected Content-Encoding: br from ${what}`); } catch (_) {}
+}
+
+const GUARDED = Symbol.for('aegis.brotliGuard.emit');
+function patchEmit(proto) {
+  if (!proto || typeof proto.emit !== 'function' || proto.emit[GUARDED]) return;
+  const origEmit = proto.emit;
+  const guarded = function (event, a, b) {
+    if (event === 'request' && a && a.headers && hasBr(a.headers['content-encoding'])) {
+      // HTTP/1 and the HTTP/2 compatibility API: (req, res)
       try {
-        res.statusCode = 415;
-        res.setHeader('content-type', 'text/plain');
-        res.end('Content-Encoding br not accepted\n');
-        req.resume();
+        b.statusCode = 415;
+        b.setHeader('content-type', 'text/plain');
+        b.end('Content-Encoding br not accepted\n');
+        a.resume();
       } catch (_) {}
-      try { process.emitWarning(`[aegis-guard] rejected Content-Encoding: br from ${req.socket && req.socket.remoteAddress} ${req.method} ${req.url}`); } catch (_) {}
+      warnRejected(`${a.socket && a.socket.remoteAddress} ${a.method} ${a.url}`);
       return true;
     }
+    if (event === 'stream' && b && hasBr(b['content-encoding'])) {
+      // HTTP/2 core API: (stream, headers). Also runs before the compat layer.
+      try {
+        a.respond({ ':status': 415, 'content-type': 'text/plain' });
+        a.end('Content-Encoding br not accepted\n');
+        a.resume();
+      } catch (_) {}
+      warnRejected(`${a.session && a.session.socket && a.session.socket.remoteAddress} ${b[':method']} ${b[':path']}`);
+      return true;
+    }
+    return origEmit.apply(this, arguments);
+  };
+  guarded[GUARDED] = true;
+  proto.emit = guarded;
+}
+
+// https.Server inherits from tls.Server, not http.Server: patch it on its own
+// (patchEmit skips it if it already resolves to a guarded emit).
+patchEmit(http.Server.prototype);
+patchEmit(https.Server.prototype);
+
+// http2: reach the server classes through throwaway instances (never listening).
+try {
+  const http2 = require('http2');
+  for (const make of ['createServer', 'createSecureServer']) {
+    let inst;
+    try {
+      inst = http2[make]();
+      patchEmit(Object.getPrototypeOf(inst));
+    } catch (_) {
+      // Could not build the class by hand (e.g. createSecureServer needs options):
+      // patch each instance the app creates instead.
+      const orig = http2[make];
+      const wrapped = function (...args) {
+        const s = orig.apply(this, args);
+        if (s && !s.emit[GUARDED]) {
+          const proto = Object.getPrototypeOf(s);
+          if (proto) patchEmit(proto);
+        }
+        return s;
+      };
+      try { override(http2, make, wrapped); } catch (_) {}
+    } finally {
+      try { inst && inst.close(); } catch (_) {}
+    }
   }
-  return origEmit.apply(this, arguments);
-};
+} catch (_) {}
 
 process.emitWarning('[aegis-guard] CVE-2026-111497 Brotli guard active', { code: 'AEGIS_BROTLI_GUARD' });

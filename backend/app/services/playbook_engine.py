@@ -464,7 +464,7 @@ class PlaybookEngine:
                         continue
                     via = action.get("via", "local")
                     if via == "firewall":
-                        result = await self._block_via_firewall(source_ip)
+                        result = await self._block_via_firewall(source_ip, playbook)
                     else:
                         result = self._block_via_local(source_ip)
 
@@ -537,7 +537,7 @@ class PlaybookEngine:
 
         return execution_result
 
-    async def _block_via_firewall(self, ip: str) -> dict:
+    async def _block_via_firewall(self, ip: str, playbook: Optional[dict] = None) -> dict:
         """Block IP via Firewall (Pi firewall). Fire-and-forget."""
         # BUG-4 fix: enforce the same safe-IP CIDR check that
         # guardrails.evaluate_action() applies. Playbooks bypass the normal
@@ -560,7 +560,15 @@ class PlaybookEngine:
             pass
         try:
             from app.core.firewall_client import firewall_client
-            result = await firewall_client.block_ip(ip)
+            playbook = playbook or {}
+            pb_name = playbook.get("name") or playbook.get("id") or "unknown"
+            result = await firewall_client.block_ip(
+                ip,
+                reason=f"playbook: {pb_name}",
+                threat_type=playbook.get("threat_type"),
+                severity=playbook.get("severity"),
+                force=True,  # confirmed attack already passed the playbook gate
+            )
             return {
                 "action": "block_ip",
                 "via": "firewall",

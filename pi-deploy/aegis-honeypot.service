@@ -11,7 +11,11 @@ WorkingDirectory=/home/<USER>/aegis-honeypot
 Environment=HONEYPOT_PORT=8081
 Environment=HONEYPOT_LOG=/var/log/aegis/honeypot.log
 Environment=AEGIS_LOCAL_FW=http://127.0.0.1:8765
-Environment=AEGIS_API_URL=<YOUR_SERVER_IP>:8000
+# AEGIS_API_URL (e.g. http://<YOUR_SERVER_IP>:8000) and AEGIS_API_KEY go in a
+# root-only env file, never inline here: unit files are world-readable
+# (`systemctl cat`). Create it with:
+#   sudo install -m 600 -o root -g root /dev/stdin /etc/aegis/honeypot.env
+EnvironmentFile=-/etc/aegis/honeypot.env
 ExecStart=/usr/bin/python3 /home/<USER>/aegis-honeypot/aegis_honeypot.py
 Restart=on-failure
 RestartSec=5
