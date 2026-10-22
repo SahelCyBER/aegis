@@ -1,7 +1,7 @@
 id: sigma_cve_n_able_n_central_2026_86218
 name: N-able N-central Exploitation Attempt (CVE-2026-86218)
 kind: sigma
-severity: critical
+severity: low
 enabled: true
 tactics:
 - InitialAccess
@@ -21,10 +21,9 @@ condition:
 entityMappings:
 - type: IP
   field: source_ip
-description: 'Detects attempted exploitation of CVE-2026-86218 in N-able N-central (CVSS 10.0).
-  Behavioural rule. The exploit payload for this CVE is not visible in the URL -- it travels
-  in the request body or a header, which this platform cannot read -- so the rule measures
-  rhythm instead of signature: ten or more requests to this endpoint from one source in five
-  minutes is consistent with automated payload iteration, not with a real user.'
+description: 'Detects attempted exploitation of CVE-2026-86218 in N-able N-central (CVSS 10.0). Demoted
+  to low (alert-only): no product-specific URL has been published for this CVE, so the only observable
+  is request rhythm on a generic path, and that matches ordinary application traffic. It is kept as a
+  hunting signal and chain input, never as an auto-block trigger.'
 references:
 - https://arcticwolf.com/resources/blog/cve-2026-86218/

@@ -57,6 +57,8 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 from urllib.parse import unquote
 
+from app.core.auth_endpoints import is_credential_attempt
+
 
 # ---------------------------------------------------------------------------
 # Pattern table -- ONE definition per detection signature.
@@ -886,7 +888,7 @@ def _refine_auth_failure(
             # polling produces a stream of GET 401s on arbitrary API paths.
             # That is the scenario that once locked this platform's own
             # operator out; it carries no credential, so it is not a guess.
-            if (request_method or "").upper() in ("GET", "HEAD", "OPTIONS"):
+            if not is_credential_attempt(request_method, request_path):
                 return ("http_request", "http_dashboard", "low", "stale_session_401")
             return (
                 "http_auth_failure",
@@ -913,22 +915,22 @@ def _refine_auth_failure(
     # 233 GET /api/notifications/* -> 401 from an expired session still
     # polling) opened brute-force incidents that would have blocked the office.
     #
-    # The rule applied is the one _is_session_check already states for AEGIS's
-    # own API: credential attempts are POSTs. A GET/HEAD/OPTIONS that returns
-    # 401 carries at most a stale token, not a guess. A POST that returns 401
-    # is a real credential surface on a web app, so it becomes
-    # http_auth_failure and is judged by http_auth_brute_force (15 in 60s),
-    # the rule written for HTTP, instead of the protocol-agnostic fallback.
+    # Only a request that submits credentials to an auth endpoint is a guess
+    # (core.auth_endpoints.is_credential_attempt, shared with log_watcher). A
+    # 401 on any other path -- GET polling, or a POST like generate-dst retried
+    # by a client whose session expired -- carries a stale token, not a
+    # password, and stays a plain http_request. Such POSTs used to become
+    # http_auth_failure and, a few browsers at a time behind one office NAT,
+    # tripped http_auth_brute_force.
     #
     # Known trade-off: HTTP Basic-auth brute force is sent as GET. None of the
     # web apps this platform fronts use Basic auth; if one ever does, it needs
     # its own path-scoped rule rather than reopening every expired session.
     if status == 401 and request_path:
-        method = (request_method or "").upper()
-        if method in ("GET", "HEAD", "OPTIONS"):
-            return ("http_request", fallback_protocol, "low", "stale_session_401")
-        if method == "POST":
+        if is_credential_attempt(request_method, request_path):
             return ("http_auth_failure", "http_app", "medium", "app_401")
+        if request_method:
+            return ("http_request", fallback_protocol, "low", "stale_session_401")
 
     # Backwards-compatible generic name. Rules subscribed to the old
     # ``auth_failure`` event_type keep firing on lines we cannot classify.

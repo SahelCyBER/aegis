@@ -17,12 +17,18 @@ condition:
   group_by: source_ip
   filter:
     path_contains:
-    - /pixel
-    - /submit.php
-    - /updates
-    - __utm.gif
-    - /__session
+    - /dpixel
+    - /__utm.gif
+    - /pixel.gif
+    - /g.pixel
+    - /updates.rss
+    - /j.ad
+    - /ptj
+    - /en_us/all.js
 entityMappings:
 - type: IP
   field: source_ip
-description: HTTP traffic matching Cobalt Strike malleable C2 profile patterns.
+description: 'HTTP traffic matching default Cobalt Strike malleable C2 profile URIs (/dpixel, /__utm.gif,
+  /pixel.gif, /updates.rss, ...). The bare /pixel, /updates, /submit.php and /__session were removed:
+  they are ordinary tracking-pixel, update-feed, form and session routes of unrelated apps and matched
+  them on rhythm alone.'

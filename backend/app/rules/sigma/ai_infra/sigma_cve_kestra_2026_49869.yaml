@@ -12,18 +12,18 @@ data_sources:
 condition:
   event_type: http_request
   filter:
-    path_contains:
-    - /configs
+    path_regex: (?i)/api/v1/[^?]+/configs(\?|$)
   count_threshold: 10
   time_window_seconds: 300
   group_by: source_ip
 entityMappings:
 - type: IP
   field: source_ip
-description: 'Detects attempted exploitation of CVE-2026-49869 in Kestra (CVSS 9.1). Behavioural
-  rule. The exploit payload for this CVE is not visible in the URL -- it travels in the request
-  body or a header, which this platform cannot read -- so the rule measures rhythm instead
-  of signature: ten or more requests to this endpoint from one source in five minutes is consistent
-  with automated payload iteration, not with a real user.'
+description: Detects attempted exploitation of CVE-2026-49869 in Kestra (authentication bypass to RCE).
+  Kestra's AuthenticationFilter whitelists any API path whose last segment is 'configs', so the exploit
+  requests look like /api/v1/main/flows/<flow>/configs. The legitimate public endpoint /api/v1/configs
+  has no segment between /api/v1/ and /configs and is not matched. Ten or more such requests from one
+  source in five minutes is automated bypass use. Previously matched any path containing /configs.
 references:
 - https://github.com/kestra-io/kestra/security/advisories/GHSA-5vc5-wxxq-3fjx
+- https://nvd.nist.gov/vuln/detail/CVE-2026-49869

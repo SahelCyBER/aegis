@@ -16,11 +16,12 @@ condition:
   time_window_seconds: 60
   group_by: source_ip
   filter:
-    path_contains:
-    - /api/v1/pods
-    - /api/v1/secrets
-    - /api/v1/namespaces
+    path_regex: (?i)/api/v1/(namespaces/[^/?]+/(pods|secrets|configmaps)|secrets)(/|\?|$)
 entityMappings:
 - type: IP
   field: source_ip
-description: Suspicious Kubernetes API requests from unexpected source.
+description: 'Suspicious Kubernetes API requests from unexpected source: namespaced pod/secret/configmap
+  access (/api/v1/namespaces/<ns>/pods) or cluster-wide secret listing. Bare /api/v1/pods and /api/v1/namespaces
+  were removed because /api/v1/<resource> is the versioned route of any REST application.'
+references:
+- https://kubernetes.io/docs/reference/using-api/api-concepts/

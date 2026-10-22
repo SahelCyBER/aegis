@@ -1,7 +1,7 @@
 id: sigma_web_api_abuse
 name: API Endpoint Enumeration
 kind: sigma
-severity: medium
+severity: low
 enabled: true
 tactics:
 - InitialAccess
@@ -22,4 +22,6 @@ condition:
 entityMappings:
 - type: IP
   field: source_ip
-description: Rapid requests to multiple API endpoints suggesting enumeration.
+description: 'Rapid requests to many distinct API paths suggesting enumeration. Demoted to low (alert-only):
+  the path filter is a generic REST prefix, so a single-page app loading a dashboard produces the same
+  distinct-path count; a count of distinct paths is a hunting signal, not grounds for an automatic block.'

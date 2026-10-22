@@ -13,18 +13,18 @@ condition:
   event_type: http_request
   filter:
     path_contains:
-    - /staging/
-    - /sync/
+    - /cmspages/staging/syncserver.asmx
   count_threshold: 10
   time_window_seconds: 300
   group_by: source_ip
 entityMappings:
 - type: IP
   field: source_ip
-description: 'Detects attempted exploitation of CVE-2025-2749 in Kentico Xperience (CVSS 7.5).
-  Behavioural rule. The exploit payload for this CVE is not visible in the URL -- it travels
-  in the request body or a header, which this platform cannot read -- so the rule measures
-  rhythm instead of signature: ten or more requests to this endpoint from one source in five
-  minutes is consistent with automated payload iteration, not with a real user.'
+description: 'Detects attempted exploitation of CVE-2025-2749 in Kentico Xperience: path traversal in
+  the Staging Sync Server web service at /CMSPages/Staging/SyncServer.asmx. Ten or more requests to that
+  endpoint from one source in five minutes is automated use of the staging service. Previously matched
+  any path containing /staging/ or /sync/, which are common names in ordinary applications.'
 references:
 - https://devnet.kentico.com/download/hotfixes
+- https://nvd.nist.gov/vuln/detail/CVE-2025-2749
+- https://ajking.io/threat-briefs/threat-brief-2026-04-21/

@@ -13,19 +13,18 @@ condition:
   event_type: http_request
   filter:
     path_contains:
-    - /services/
-    - /connector/
+    - /setupwizard.aspx/
   count_threshold: 10
   time_window_seconds: 300
   group_by: source_ip
 entityMappings:
 - type: IP
   field: source_ip
-description: 'Detects attempted exploitation of CVE-2024-1708 in ConnectWise ScreenConnect
-  (CVSS 9.9, linked to ransomware campaigns). Behavioural rule. The exploit payload for this
-  CVE is not visible in the URL -- it travels in the request body or a header, which this
-  platform cannot read -- so the rule measures rhythm instead of signature: ten or more requests
-  to this endpoint from one source in five minutes is consistent with automated payload iteration,
-  not with a real user.'
+description: 'Detects the CVE-2024-1709 authentication bypass that is chained with CVE-2024-1708 on ConnectWise
+  ScreenConnect: requests to /SetupWizard.aspx with a trailing path segment, which Huntress reports is
+  never legitimate. Ten or more in five minutes from one source is automated exploitation. Previously
+  matched any path containing /services/ or /connector/, which are ordinary route names in unrelated apps.'
 references:
 - https://www.connectwise.com/company/trust/security-bulletins/connectwise-screenconnect-23.9.8
+- https://www.huntress.com/blog/a-catastrophe-for-control-understanding-the-screenconnect-authentication-bypass
+- https://www.logpoint.com/en/blog/emerging-threats/screenconnect-authentication-bypass/

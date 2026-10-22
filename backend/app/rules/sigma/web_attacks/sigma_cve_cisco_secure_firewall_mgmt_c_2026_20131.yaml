@@ -1,7 +1,7 @@
 id: sigma_cve_cisco_secure_firewall_mgmt_c_2026_20131
 name: Cisco Secure Firewall Mgmt Center Exploitation Attempt (CVE-2026-20131)
 kind: sigma
-severity: critical
+severity: low
 enabled: true
 tactics:
 - InitialAccess
@@ -20,11 +20,11 @@ condition:
 entityMappings:
 - type: IP
   field: source_ip
-description: 'Detects attempted exploitation of CVE-2026-20131 in Cisco Secure Firewall Mgmt
-  Center (CVSS 10.0, linked to ransomware campaigns). Behavioural rule. The exploit payload
-  for this CVE is not visible in the URL -- it travels in the request body or a header, which
-  this platform cannot read -- so the rule measures rhythm instead of signature: ten or more
-  requests to this endpoint from one source in five minutes is consistent with automated payload
-  iteration, not with a real user.'
+description: 'Detects attempted exploitation of CVE-2026-20131 in Cisco Secure Firewall Mgmt Center (CVSS
+  10.0, linked to ransomware campaigns). Demoted to low (alert-only): no product-specific URL has been
+  published for this CVE, so the only observable is request rhythm on a generic path, and that matches
+  ordinary application traffic. It is kept as a hunting signal and chain input, never as an auto-block
+  trigger.'
 references:
 - https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-fmc-rce-NKhnULJh
+- https://horizon3.ai/attack-research/vulnerabilities/cve-2026-20131/
