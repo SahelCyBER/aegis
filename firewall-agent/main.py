@@ -47,6 +47,14 @@ from pydantic import BaseModel
 BLOCKED_IPS_FILE = Path("/etc/aegis/blocked_ips.json")
 EVENTS_MAX = 500  # Max events kept in memory
 ATTACKERS_MAX = 1000  # Max tracked attackers
+
+# AEGIS-FP-FIX 20261019: minimum sightings before an UNCLASSIFIED hit may block.
+# A single unclassified request used to be enough to block an IP at HIGH, which
+# is how 10 real visitors (2 residential ISP clients, 4 proxy.flipboard.com,
+# Cloudflare WARP, 3 more residentials) ended up blocked with attack_types:[]
+# and total_attempts:1. An exploit signature still blocks on the first hit.
+# Set AEGIS_BLOCK_MIN_ATTEMPTS=1 to restore the pre-2026-10-19 behaviour.
+BLOCK_MIN_ATTEMPTS = max(1, int(os.getenv("AEGIS_BLOCK_MIN_ATTEMPTS", "2")))
 IPTABLES = "/usr/sbin/iptables"
 IP_API_URL = "http://ip-api.com/json/{ip}?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query"
 
@@ -652,12 +660,50 @@ def _load_blocked_ips() -> list[str]:
         return []
 
 
+def _load_blocked_records() -> dict:
+    """AEGIS-FP-FIX 20261019: per-IP block metadata saved next to `blocked`.
+
+    Returns {} for a pre-fix file, which makes the caller fall back to the old
+    HIGH/[] default -- but it now says so explicitly in intel.reason instead of
+    silently looking like a confirmed high-threat attacker.
+    """
+    if not BLOCKED_IPS_FILE.exists():
+        return {}
+    try:
+        data = json.loads(BLOCKED_IPS_FILE.read_text())
+        recs = data.get("records") if isinstance(data, dict) else None
+        return recs if isinstance(recs, dict) else {}
+    except (json.JSONDecodeError, OSError) as e:
+        logger.warning(f"Failed to load blocked records from {BLOCKED_IPS_FILE}: {e}")
+        return {}
+
+
 def _save_blocked_ips(ips: list[str]):
     """Save blocked IPs to persistent file."""
     try:
         BLOCKED_IPS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        # AEGIS-FP-FIX 20261019: persist WHY each IP is blocked. Until today only
+        # the bare IP list was saved, so every restart rebuilt /attackers as
+        # HIGH/attack_types:[] and the original reason was lost for good — which
+        # is exactly why 120 blocks could not be audited after the 2026-10-17
+        # restart. `records` is purely additive: _load_blocked_ips still reads
+        # `blocked`, so an older file (or an older build) keeps working.
+        records = {}
+        for _ip in ips:
+            _a = _attackers.get(_ip)
+            if not _a:
+                continue
+            records[_ip] = {
+                "threat_level": _a.get("threat_level", "HIGH"),
+                "attack_types": _a.get("attack_types", []),
+                "first_seen": _a.get("first_seen"),
+                "last_seen": _a.get("last_seen"),
+                "reason": (_a.get("intel") or {}).get("reason"),
+                "total_attempts": (_a.get("stats") or {}).get("total_attempts", 0),
+            }
         data = {
             "blocked": ips,
+            "records": records,
             "updated_at": _now_iso(),
             "count": len(ips),
         }
@@ -823,9 +869,36 @@ async def lifespan(app: FastAPI):
     _restore_iptables_rules()
 
     # Populate attacker list from currently blocked IPs
+    # AEGIS-FP-FIX 20261019: restore the SAVED classification instead of stamping
+    # every persisted IP as HIGH with no attack types. That hardcoded HIGH is what
+    # made the whole blocklist unauditable after the 2026-10-17 restart.
+    _recs = _load_blocked_records()
     for ip in list_blocked_ips():
-        if ip not in _attackers:
-            _track_attacker(ip, event_type="block", threat_level="HIGH")
+        if ip in _attackers:
+            continue
+        _r = _recs.get(ip) or {}
+        _track_attacker(
+            ip,
+            event_type="block",
+            threat_level=_r.get("threat_level") or "HIGH",
+            attack_types=_r.get("attack_types") or None,
+        )
+        _e = _attackers[ip]
+        if _r:
+            if _r.get("first_seen"):
+                _e["first_seen"] = _r["first_seen"]
+            if _r.get("last_seen"):
+                _e["last_seen"] = _r["last_seen"]
+            if _r.get("total_attempts"):
+                _e["stats"]["total_attempts"] = _r["total_attempts"]
+            if _r.get("reason"):
+                _e["intel"]["reason"] = _r["reason"]
+        else:
+            _e["intel"]["reason"] = (
+                "restored from persistence written before 2026-10-19; the original "
+                "block reason was never saved, so this threat_level is a default, "
+                "NOT evidence"
+            )
 
     # Verified-crawler whitelist (2026-08-03 incident): populate the published
     # vendor prefix feeds and keep them fresh. Started as a background task so
@@ -953,6 +1026,9 @@ class IPRequest(BaseModel):
     threat_type: Optional[str] = None
     severity: Optional[str] = None
     duration: Optional[int] = None
+    # AEGIS-FP-FIX 20261019: bypass the evidence gate for a deliberate
+    # operator/admin block (the gate only guards automated, unclassified ones).
+    force: Optional[bool] = False
 
 
 class ChatRequest(BaseModel):
@@ -1108,6 +1184,39 @@ async def post_block(req: IPRequest):
         _add_event("crawler_block_refused", ip=ip, details=detail, severity="info")
         raise HTTPException(status_code=403, detail=detail)
 
+    # --- AEGIS-FP-FIX 20261019: evidence gate -------------------------------
+    # A block now needs EITHER a real exploit signature (_EXPLOIT_TOKENS, which
+    # still blocks on the very first hit) OR a repeat sighting. A first contact
+    # that is unclassified or merely behavioural ("404", "scanner",
+    # "high_request_rate") is recorded as an observation and NOT blocked; the
+    # next hit from the same IP blocks it. This is the fix for the 2026-10-19
+    # false-positive audit, where every blocked IP had exactly 1 attempt and no
+    # attack type. Operator blocks pass `force: true`.
+    if not req.force:
+        _seen = ((_attackers.get(ip) or {}).get("stats") or {}).get("total_attempts", 0)
+        if not _is_exploit_signal(threat_text) and (_seen + 1) < BLOCK_MIN_ATTEMPTS:
+            _track_attacker(ip, event_type="observe", threat_level="LOW")
+            if threat_text:
+                _attackers[ip]["intel"]["reason"] = threat_text
+            detail = (
+                f"Not blocking {ip}: no exploit signature and only {_seen + 1} "
+                f"sighting(s) (minimum {BLOCK_MIN_ATTEMPTS}). Reported threat: "
+                f"{threat_text or 'unclassified'}. Recorded as an observation; a "
+                "repeat hit will block it. Use force:true to override."
+            )
+            logger.info(detail)
+            _add_event("block_deferred_no_evidence", ip=ip, details=detail,
+                       severity="info")
+            return {
+                "success": False,
+                "ip": ip,
+                "blocked": False,
+                "deferred": True,
+                "sightings": _seen + 1,
+                "min_attempts": BLOCK_MIN_ATTEMPTS,
+                "detail": detail,
+            }
+
     success = block_ip(ip)
     if not success:
         raise HTTPException(status_code=500, detail=f"Failed to block {ip}")
@@ -1118,6 +1227,10 @@ async def post_block(req: IPRequest):
     attack_types = [t for t in (req.pattern_name, req.threat_type) if t]
     _track_attacker(ip, event_type="block", threat_level=threat_level,
                     attack_types=attack_types or None)
+    # AEGIS-FP-FIX 20261019: keep the free-text reason too, so it survives a
+    # restart via _save_blocked_ips -> records[ip]["reason"].
+    if threat_text:
+        _attackers[ip]["intel"]["reason"] = threat_text
 
     # Update persistence
     blocked = list_blocked_ips()
