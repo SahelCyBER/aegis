@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.7.22] - 2026-10-22
+
+### Added — virtual patch for Node.js CVE-2026-111497 (Brotli RCE)
+- Node.js 22.x/24.x/26.x before 22.23.4/24.22.1/26.12.1 (and every EOL 20.x)
+  have an out-of-bounds write in the Brotli decoder that allows remote code
+  execution from crafted compressed data. `deploy/guards/node-brotli-guard.cjs`
+  protects Node processes until the runtime is upgraded. Load it with
+  `NODE_OPTIONS="--require /path/to/node-brotli-guard.cjs"`:
+  - Brotli **decompression** is refused (zlib sync/async/stream APIs and the
+    `BrotliDecompress` class); streams fail cleanly instead of throwing, so
+    `fetch()` rejects without crashing the process.
+  - Outbound requests stop asking for Brotli: `fetch()` defaults to
+    `gzip, deflate` and `br` is stripped from `Accept-Encoding` on
+    `http(s).request/get` and `ClientRequest.setHeader` (axios, got, node-fetch
+    keep working against servers that support Brotli).
+  - Incoming HTTP requests with `Content-Encoding: br` are answered `415`
+    before any body parser runs.
+  - Compression and gzip are untouched; `AEGIS_BROTLI_GUARD=off` disables it.
+- Verified on Node 20.10/20.18 across 10 production Node apps (Next.js,
+  Express, cron workers): all stayed online, Brotli request bodies got 415.
+
+---
+
 ## [1.7.21] - 2026-10-09 (no more CPU bursts)
 
 v1.7.20 fixed the memory leak on endpoint uploads; the API still showed
