@@ -62,6 +62,14 @@ function handleSessionExpired(): void {
   }
 }
 
+function isBlockedBody(body: string): boolean {
+  try {
+    return JSON.parse(body)?.detail === 'blocked';
+  } catch {
+    return false;
+  }
+}
+
 async function request<T>(
   endpoint: string,
   options: RequestInit & { skipAuth?: boolean } = {}
@@ -99,6 +107,13 @@ async function request<T>(
       throw new ApiError(401, 'Session expired');
     }
     const body = await response.text();
+    // The IP-block middleware answers 403 {"detail":"blocked"} to blocked clients.
+    if (response.status === 403 && isBlockedBody(body)) {
+      throw new ApiError(
+        403,
+        "AEGIS blocked this network's IP. Unblock it from the server or add it to AEGIS_INTERNAL_IPS."
+      );
+    }
     throw new ApiError(response.status, body || `HTTP ${response.status}`);
   }
 
