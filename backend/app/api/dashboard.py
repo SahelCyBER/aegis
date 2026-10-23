@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 logger = logging.getLogger("aegis.dashboard")
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from sqlalchemy import select, func
+from sqlalchemy import select, func, false
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 
@@ -1005,7 +1005,7 @@ async def get_monitored_apps(
         )
         .where(
             Incident.client_id == client.id,
-            Incident.source.in_(app_names) if app_names else func.false(),
+            Incident.source.in_(app_names) if app_names else false(),
             Incident.detected_at >= cutoff_90d,
         )
         .group_by(Incident.source, Incident.status)
