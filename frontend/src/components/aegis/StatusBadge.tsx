@@ -40,7 +40,7 @@ export interface StatusBadgeProps {
 
 const VARIANT_TOKEN: Record<StatusVariant, string> = {
   muted: 'var(--muted-foreground)',
-  info: 'var(--chart-5, #22D3EE)',
+  info: 'var(--chart-5, #A78BFA)',
   success: 'var(--success)',
   warning: 'var(--warning)',
   danger: 'var(--danger)',
@@ -60,7 +60,7 @@ const VARIANT_TOKEN: Record<StatusVariant, string> = {
  */
 const VARIANT_TEXT_TOKEN: Record<StatusVariant, string> = {
   muted: 'var(--muted-foreground)',
-  info: 'var(--chart-5-text, var(--chart-5, #22D3EE))',
+  info: 'var(--chart-5-text, var(--chart-5, #A78BFA))',
   success: 'var(--success-text, var(--success))',
   warning: 'var(--warning-text, var(--warning))',
   danger: 'var(--danger-text, var(--danger))',

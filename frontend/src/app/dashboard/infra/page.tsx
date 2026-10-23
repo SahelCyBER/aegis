@@ -56,10 +56,10 @@ type NodeType = 'server' | 'workspace';
 // LED-specific colors — intentional hardware aesthetic, not theme colors
 const LED_MAGENTA = '#D946EF';
 const LED_COLORS = {
-  cyan: { active: 'var(--brand)', glow: 'rgba(34,211,238,0.6)', dim: 'rgba(34,211,238,0.1)' },
+  cyan: { active: 'var(--brand)', glow: 'rgba(167,139,250,0.6)', dim: 'rgba(167,139,250,0.1)' },
   pink: { active: LED_MAGENTA, glow: 'rgba(217,70,239,0.6)', dim: 'rgba(217,70,239,0.1)' },
   green: { active: 'var(--success)', glow: 'rgba(34,197,94,0.6)', dim: 'rgba(34,197,94,0.1)' },
-  orange: { active: 'var(--brand-accent)', glow: 'rgba(249,115,22,0.6)', dim: 'rgba(249,115,22,0.1)' },
+  orange: { active: 'var(--brand-accent)', glow: 'rgba(245,158,11,0.6)', dim: 'rgba(245,158,11,0.1)' },
 } as const;
 
 type LEDColor = keyof typeof LED_COLORS;

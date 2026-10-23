@@ -207,7 +207,7 @@ export function VulnInspectionDrawer({
             {/* Description Section */}
             <div className="p-5 rounded-2xl bg-[#16161A] border border-white/10 space-y-3">
               <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-cyan-400" />
+                <FileText className="w-4 h-4 text-violet-400" />
                 Vulnerability Description
               </h3>
               <p className="text-xs text-zinc-300 leading-relaxed">
@@ -216,10 +216,10 @@ export function VulnInspectionDrawer({
             </div>
 
             {/* AI Remediation Guidance */}
-            <div className="p-5 rounded-2xl bg-[#16161A] border border-cyan-500/30 space-y-3 relative overflow-hidden">
+            <div className="p-5 rounded-2xl bg-[#16161A] border border-violet-500/30 space-y-3 relative overflow-hidden">
               <div className="flex items-center justify-between">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-cyan-400" />
+                  <Cpu className="w-4 h-4 text-violet-400" />
                   AI Remediation Recommendation
                 </h3>
                 <ProvenanceBadge source="agent" label="AI Remediation" />
@@ -245,7 +245,7 @@ export function VulnInspectionDrawer({
             {vuln.ai_risk_score !== undefined && vuln.ai_risk_score !== null && (
               <div className="p-4 rounded-xl bg-[#16161A] border border-white/10 flex items-center justify-between font-mono text-xs">
                 <div className="text-zinc-400">AI Risk Evaluation Score</div>
-                <div className="font-bold text-cyan-400">{vuln.ai_risk_score.toFixed(1)} / 10.0</div>
+                <div className="font-bold text-violet-400">{vuln.ai_risk_score.toFixed(1)} / 10.0</div>
               </div>
             )}
 

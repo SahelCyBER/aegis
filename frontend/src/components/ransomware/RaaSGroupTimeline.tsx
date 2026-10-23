@@ -31,8 +31,8 @@ interface RaaSApiResponse {
 }
 
 const GROUP_COLORS = [
-  '#22D3EE', // cyan (brand)
-  '#F97316', // orange (accent)
+  '#A78BFA', // cyan (brand)
+  '#F59E0B', // orange (accent)
   '#A78BFA', // violet
   '#34D399', // emerald
   '#FB923C', // amber
@@ -92,7 +92,7 @@ export function RaaSGroupTimeline() {
     <div className="bg-[#18181B] border border-white/[0.06] rounded-2xl overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[#22D3EE]" />
+          <TrendingUp className="w-4 h-4 text-[#A78BFA]" />
           <span className="text-[13px] font-semibold text-foreground">RaaS Group Activity</span>
         </div>
         <button

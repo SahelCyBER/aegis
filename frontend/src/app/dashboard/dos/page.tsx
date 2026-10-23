@@ -203,14 +203,14 @@ export default function DosShieldPage() {
             className={cn(
               'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase tracking-wider border',
               isMonitor
-                ? 'text-[#F97316] bg-[#F97316]/10 border-[#F97316]/25'
+                ? 'text-[#F59E0B] bg-[#F59E0B]/10 border-[#F59E0B]/25'
                 : 'text-[var(--success)] bg-[var(--success)]/10 border-[var(--success)]/25',
             )}
           >
             <span
               className={cn(
                 'w-1.5 h-1.5 rounded-full',
-                isMonitor ? 'bg-[#F97316]' : 'bg-[var(--success)]',
+                isMonitor ? 'bg-[#F59E0B]' : 'bg-[var(--success)]',
               )}
             />
             {isMonitor ? 'Monitor' : 'Active Enforcing'}
@@ -248,7 +248,7 @@ export default function DosShieldPage() {
         <StatCard
           label="Blocks"
           value={counters.blocks}
-          accent={counters.blocks > 0 ? '#F97316' : undefined}
+          accent={counters.blocks > 0 ? '#F59E0B' : undefined}
         />
       </div>
 
@@ -291,7 +291,7 @@ export default function DosShieldPage() {
             <div className="flex items-center justify-between gap-3">
               <span className="text-[12.5px] text-muted-foreground">NetShield status</span>
               {status.netshield_enabled ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider text-[#F97316] bg-[#F97316]/10 border border-[#F97316]/25">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider text-[#F59E0B] bg-[#F59E0B]/10 border border-[#F59E0B]/25">
                   <Zap className="w-3 h-3" />
                   Enabled
                 </span>
@@ -316,7 +316,7 @@ export default function DosShieldPage() {
       {/* Top offenders */}
       <Panel padding="none">
         <div className="flex items-center gap-2 px-4 sm:px-6 py-4 border-b border-border">
-          <ShieldAlert className="w-4 h-4 text-[#F97316]" />
+          <ShieldAlert className="w-4 h-4 text-[#F59E0B]" />
           <h2 className="text-[13px] font-medium uppercase tracking-wider text-foreground">
             Top offenders
           </h2>

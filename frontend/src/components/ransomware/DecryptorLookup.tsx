@@ -59,7 +59,7 @@ export function DecryptorLookup() {
   return (
     <div className="bg-[#18181B] border border-white/[0.06] rounded-2xl overflow-hidden">
       <div className="flex items-center gap-2 px-5 py-4 border-b border-white/[0.06]">
-        <Search01Icon size={16} className="text-[#22D3EE]" />
+        <Search01Icon size={16} className="text-[#A78BFA]" />
         <span className="text-[13px] font-semibold text-foreground">Decryptor Lookup</span>
       </div>
 
@@ -73,7 +73,7 @@ export function DecryptorLookup() {
               onChange={(e) => setExtension(e.target.value)}
               onKeyDown={handleKey}
               placeholder="locked, encrypted, pay2decrypt…"
-              className="w-full bg-[#09090B] border border-border rounded-xl pl-7 pr-4 py-2.5 text-[13px] font-mono text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-[#22D3EE]/30 transition-colors"
+              className="w-full bg-[#09090B] border border-border rounded-xl pl-7 pr-4 py-2.5 text-[13px] font-mono text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-[#A78BFA]/30 transition-colors"
             />
           </div>
           <button
@@ -83,7 +83,7 @@ export function DecryptorLookup() {
               'px-4 py-2.5 rounded-xl text-[13px] font-semibold transition-colors shrink-0',
               loading || !extension.trim()
                 ? 'bg-white/[0.04] text-muted-foreground/40 cursor-not-allowed'
-                : 'bg-[#22D3EE] hover:bg-[#22D3EE]/90 text-[#09090B]'
+                : 'bg-[#A78BFA] hover:bg-[#A78BFA]/90 text-[#09090B]'
             )}
           >
             {loading ? 'Searching…' : 'Search'}
@@ -113,7 +113,7 @@ export function DecryptorLookup() {
                 href="https://www.nomoreransom.org/crypto-sheriff.php"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 flex items-center gap-1.5 text-[12px] text-[#22D3EE] hover:text-[#22D3EE]/80 transition-colors"
+                className="mt-3 flex items-center gap-1.5 text-[12px] text-[#A78BFA] hover:text-[#A78BFA]/80 transition-colors"
               >
                 Try No More Ransom
                 <ExternalLink className="w-3 h-3" />
@@ -169,7 +169,7 @@ export function DecryptorLookup() {
                     href={d.source_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-[11px] text-[#22D3EE] hover:text-[#22D3EE]/80 transition-colors"
+                    className="inline-flex items-center gap-1.5 text-[11px] text-[#A78BFA] hover:text-[#A78BFA]/80 transition-colors"
                   >
                     Download decryptor
                     <ExternalLink className="w-3 h-3" />

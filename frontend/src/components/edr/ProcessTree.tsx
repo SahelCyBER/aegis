@@ -126,7 +126,7 @@ function NodeRow({
       className={cn(
         'flex flex-wrap items-center gap-2 px-2 py-1 rounded',
         highlighted
-          ? 'bg-cyan-500/10 border border-cyan-500/40 text-cyan-100'
+          ? 'bg-violet-500/10 border border-violet-500/40 text-violet-100'
           : 'border border-transparent hover:bg-white/[0.02] text-zinc-300',
       )}
     >

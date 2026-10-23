@@ -141,7 +141,7 @@
     --popover: #FFFFFF;
     --popover-foreground: #0F1114;
 
-    --primary: #0891B2;
+    --primary: #683EE5;
     --primary-foreground: #FFFFFF;
 
     --secondary: #F1F4F8;
@@ -158,7 +158,7 @@
 
     --border: rgba(15, 17, 20, 0.08);
     --input: rgba(15, 17, 20, 0.12);
-    --ring: #0891B2;
+    --ring: #683EE5;
 
     /* AEGIS elevation ladder */
     --surface: #FFFFFF;
@@ -167,10 +167,10 @@
     --border-strong: rgba(15, 17, 20, 0.14);
 
     /* Brand */
-    --brand: #0891B2;
+    --brand: #683EE5;
     --brand-foreground: #FFFFFF;
-    --brand-muted: rgba(8, 145, 178, 0.10);
-    --brand-accent: #EA580C;
+    --brand-muted: rgba(104, 62, 229, 0.10);
+    --brand-accent: #F59E0B;
     --brand-accent-text: #9A3412;  /* AA fix: --brand-accent used as StatusBadge 'accent'
                                        text measures 3.00:1 on its own tinted background
                                        (14% mix over #FFFFFF = rgb(252,232,221)) and FAILS.
@@ -199,8 +199,8 @@
     --danger-text:  #B91C1C;  /* 5.21:1 on rgb(250,225,225) */
 
     /* Charts */
-    --chart-1: #0891B2;
-    --chart-2: #EA580C;
+    --chart-1: #683EE5;
+    --chart-2: #F59E0B;
     --chart-3: #16A34A;
     --chart-4: #D97706;
     --chart-5: #9333EA;
@@ -211,26 +211,26 @@
     /* Sidebar */
     --sidebar: #FFFFFF;
     --sidebar-foreground: #0F1114;
-    --sidebar-primary: #0891B2;
+    --sidebar-primary: #683EE5;
     --sidebar-primary-foreground: #FFFFFF;
     --sidebar-accent: #F1F4F8;
     --sidebar-accent-foreground: #0F1114;
     --sidebar-border: rgba(15, 17, 20, 0.08);
-    --sidebar-ring: #0891B2;
+    --sidebar-ring: #683EE5;
 
     /* Severity ramp — light. Independently contrast-checked, NOT a dark
        inversion (measured against #FFFFFF card / #FAFBFC background). */
     --sev-critical: #DC2626;   /* 4.83:1 on white — passes AA already, no change */
-    --sev-high:     #C2410C;   /* NOT #EA580C: measures 3.56:1 on white, fails AA (rendered
+    --sev-high:     #C2410C;   /* NOT #F59E0B: measures 3.56:1 on white, fails AA (rendered
                                    directly as text in TriageQueue/WatchPanel/Ledger/
                                    OriginMap, same single-value convention as --sev-medium
                                    below — not a fill/text split). #C2410C = 5.18:1 on white,
                                    5.00:1 on --background #FAFBFC. */
     --sev-medium:   #B45309;   /* NOT #D97706: measures 3.9:1 on white, fails AA. #B45309 = 5.1:1 */
-    --sev-low:      #0E7490;
+    --sev-low:      #4B2FBF;
     --sev-info:     #5B6473;
-    --brand-text:   #0E7490;   /* AA fix: --brand #0891B2 on #FFFFFF measures 3.68:1 and FAILS
-                                   normal-text AA. #0E7490 = 5.36:1 on white, 5.17:1 on
+    --brand-text:   #4B2FBF;   /* AA fix: --brand #683EE5 on #FFFFFF measures 3.68:1 and FAILS
+                                   normal-text AA. #4B2FBF = 5.36:1 on white, 5.17:1 on
                                    --background. Use --brand for fills/borders/meters ONLY;
                                    use --brand-text for any text or link. */
     --map-land:     rgba(15, 17, 20, 0.58);   /* ~4.6:1 on white — must read as land, not haze */
@@ -276,7 +276,7 @@
     --popover: #23262E;
     --popover-foreground: #ECEEF2;
 
-    --primary: #22D3EE;
+    --primary: #A78BFA;
     --primary-foreground: #16181D;
 
     --secondary: #23262E;
@@ -293,7 +293,7 @@
 
     --border: rgba(255, 255, 255, 0.10);
     --input: rgba(255, 255, 255, 0.12);
-    --ring: #22D3EE;
+    --ring: #A78BFA;
 
     /* Elevation ladder — clearer steps between tiers */
     --surface: #1A1D23;
@@ -302,10 +302,10 @@
     --border-strong: rgba(255, 255, 255, 0.18);
 
     /* Brand */
-    --brand: #22D3EE;
+    --brand: #A78BFA;
     --brand-foreground: #16181D;
-    --brand-muted: rgba(34, 211, 238, 0.14);
-    --brand-accent: #F97316;
+    --brand-muted: rgba(167, 139, 250, 0.14);
+    --brand-accent: #F59E0B;
     --brand-accent-text: var(--brand-accent);  /* 14%-tint on --card = 4.74:1, already passes */
 
     /* Status — recalibrated for warmer bg */
@@ -328,8 +328,8 @@
     --danger-text:  var(--danger);
 
     /* Charts — kept saturated for visibility on the warmer bg */
-    --chart-1: #22D3EE;
-    --chart-2: #F97316;
+    --chart-1: #A78BFA;
+    --chart-2: #F59E0B;
     --chart-3: #34D399;
     --chart-4: #FBBF24;
     --chart-5: #C084FC;
@@ -338,21 +338,21 @@
     /* Sidebar */
     --sidebar: #131519;
     --sidebar-foreground: #ECEEF2;
-    --sidebar-primary: #22D3EE;
+    --sidebar-primary: #A78BFA;
     --sidebar-primary-foreground: #16181D;
     --sidebar-accent: #23262E;
     --sidebar-accent-foreground: #ECEEF2;
     --sidebar-border: rgba(255, 255, 255, 0.06);
-    --sidebar-ring: #22D3EE;
+    --sidebar-ring: #A78BFA;
 
     /* Severity ramp — dark */
     --sev-critical: #F87171;   /* 5.89:1 on --card — passes AA, no change */
-    --sev-high:     #F97316;   /* 5.82:1 on --card — passes AA, no change (light theme's
+    --sev-high:     #F59E0B;   /* 5.82:1 on --card — passes AA, no change (light theme's
                                    --sev-high needed a value change; dark already clears it) */
     --sev-medium:   #FBBF24;
-    --sev-low:      #22D3EE;
+    --sev-low:      #A78BFA;
     --sev-info:     #8E96A6;
-    --brand-text:   var(--brand);   /* #22D3EE on #16181D = 9.83:1, already passes */
+    --brand-text:   var(--brand);   /* #A78BFA on #16181D = 9.83:1, already passes */
     --map-land:     rgba(236, 238, 242, 0.52);   /* ~3.9:1 on --card — legible continents */
     --map-ocean:    rgba(236, 238, 242, 0.07);   /* faint texture only, well below --map-land */
     --border-hover: rgba(255, 255, 255, 0.14);
@@ -772,30 +772,30 @@
 :root:not(.dark) .hover\:border-white\/\[0\.12\]:hover,
 :root:not(.dark) .hover\:border-white\/\[0\.14\]:hover { border-color: color-mix(in oklab, var(--foreground) 22%, transparent) !important; }
 
-:root:not(.dark) .bg-\[\#22D3EE\]\/10,
-:root:not(.dark) .bg-cyan-500\/10 { background-color: color-mix(in oklab, var(--brand) 10%, transparent) !important; }
-:root:not(.dark) .bg-\[\#F97316\]\/10 { background-color: color-mix(in oklab, var(--brand-accent) 10%, transparent) !important; }
+:root:not(.dark) .bg-\[\#A78BFA\]\/10,
+:root:not(.dark) .bg-violet-500\/10 { background-color: color-mix(in oklab, var(--brand) 10%, transparent) !important; }
+:root:not(.dark) .bg-\[\#F59E0B\]\/10 { background-color: color-mix(in oklab, var(--brand-accent) 10%, transparent) !important; }
 :root:not(.dark) .bg-\[\#EF4444\]\/10,
 :root:not(.dark) .bg-red-500\/10 { background-color: color-mix(in oklab, var(--danger) 10%, transparent) !important; }
 :root:not(.dark) .bg-\[\#22C55E\]\/10,
 :root:not(.dark) .bg-green-500\/10 { background-color: color-mix(in oklab, var(--success) 10%, transparent) !important; }
 :root:not(.dark) .bg-\[\#F59E0B\]\/10 { background-color: color-mix(in oklab, var(--warning) 10%, transparent) !important; }
 
-:root:not(.dark) .border-\[\#22D3EE\]\/20,
-:root:not(.dark) .border-cyan-500\/30 { border-color: color-mix(in oklab, var(--brand) 30%, transparent) !important; }
-:root:not(.dark) .border-\[\#F97316\]\/20 { border-color: color-mix(in oklab, var(--brand-accent) 30%, transparent) !important; }
+:root:not(.dark) .border-\[\#A78BFA\]\/20,
+:root:not(.dark) .border-violet-500\/30 { border-color: color-mix(in oklab, var(--brand) 30%, transparent) !important; }
+:root:not(.dark) .border-\[\#F59E0B\]\/20 { border-color: color-mix(in oklab, var(--brand-accent) 30%, transparent) !important; }
 :root:not(.dark) .border-\[\#EF4444\]\/20 { border-color: color-mix(in oklab, var(--danger) 25%, transparent) !important; }
 
 :root:not(.dark) .text-red-400 { color: var(--danger) !important; }
-:root:not(.dark) .text-orange-400 { color: var(--brand-accent) !important; }
+:root:not(.dark) .text-amber-400 { color: var(--brand-accent) !important; }
 :root:not(.dark) .text-yellow-400 { color: var(--warning) !important; }
-:root:not(.dark) .text-sky-400,
-:root:not(.dark) .text-cyan-400 { color: var(--brand) !important; }
+:root:not(.dark) .text-violet-400,
+:root:not(.dark) .text-violet-400 { color: var(--brand) !important; }
 :root:not(.dark) .text-green-400 { color: var(--success) !important; }
 :root:not(.dark) .text-purple-400 { color: #9333EA !important; }
 
-:root:not(.dark) .border-\[\#22D3EE\] { border-color: var(--brand) !important; }
-:root:not(.dark) .text-\[\#22D3EE\] { color: var(--brand) !important; }
+:root:not(.dark) .border-\[\#A78BFA\] { border-color: var(--brand) !important; }
+:root:not(.dark) .text-\[\#A78BFA\] { color: var(--brand) !important; }
 
 :root:not(.dark) .placeholder\:text-zinc-500::placeholder,
 :root:not(.dark) .placeholder\:text-zinc-600::placeholder,

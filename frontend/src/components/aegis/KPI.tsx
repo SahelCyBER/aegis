@@ -68,7 +68,7 @@ export function KPI({
         'group relative isolate flex flex-col justify-between',
         'min-h-[112px] sm:min-h-[120px]',
         'transition-[transform,border-color,box-shadow] duration-200',
-        'hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(249,115,22,0.18)]',
+        'hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(245,158,11,0.18)]',
         href &&
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         TONE_HOVER[tone],
@@ -82,7 +82,7 @@ export function KPI({
           className="pointer-events-none absolute inset-0 rounded-2xl opacity-60"
           style={{
             background:
-              'radial-gradient(120% 80% at 110% 100%, rgba(249,115,22,0.10) 0%, rgba(249,115,22,0) 55%)',
+              'radial-gradient(120% 80% at 110% 100%, rgba(245,158,11,0.10) 0%, rgba(245,158,11,0) 55%)',
           }}
         />
       )}

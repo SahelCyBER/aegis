@@ -199,7 +199,7 @@ export function AssetInspectionDrawer({
           {/* Header */}
           <div className="p-6 border-b border-white/10 bg-[#141418] flex items-start justify-between gap-4 shrink-0">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 shrink-0">
+              <div className="p-2.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 shrink-0">
                 <IconComp className="w-5 h-5" />
               </div>
               <div className="min-w-0">
@@ -264,7 +264,7 @@ export function AssetInspectionDrawer({
               variant="outline"
               disabled={rescanning}
               onClick={handleRescan}
-              className="gap-2 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 bg-cyan-500/5"
+              className="gap-2 border-violet-500/30 text-violet-400 hover:bg-violet-500/10 bg-violet-500/5"
             >
               <RefreshCw className={cn('w-3.5 h-3.5', rescanning && 'animate-spin')} />
               {rescanning ? 'Scanning...' : rescanSuccess ? 'Scan Triggered!' : 'Re-scan Target'}
@@ -278,7 +278,7 @@ export function AssetInspectionDrawer({
               className={cn(
                 'px-4 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap',
                 activeTab === 'overview'
-                  ? 'border-cyan-400 text-cyan-400'
+                  ? 'border-violet-400 text-violet-400'
                   : 'border-transparent text-zinc-400 hover:text-white'
               )}
             >
@@ -289,7 +289,7 @@ export function AssetInspectionDrawer({
               className={cn(
                 'px-4 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap',
                 activeTab === 'drivers'
-                  ? 'border-cyan-400 text-cyan-400'
+                  ? 'border-violet-400 text-violet-400'
                   : 'border-transparent text-zinc-400 hover:text-white'
               )}
             >
@@ -300,7 +300,7 @@ export function AssetInspectionDrawer({
               className={cn(
                 'px-4 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap',
                 activeTab === 'ports'
-                  ? 'border-cyan-400 text-cyan-400'
+                  ? 'border-violet-400 text-violet-400'
                   : 'border-transparent text-zinc-400 hover:text-white'
               )}
             >
@@ -311,7 +311,7 @@ export function AssetInspectionDrawer({
               className={cn(
                 'px-4 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap',
                 activeTab === 'vulns'
-                  ? 'border-cyan-400 text-cyan-400'
+                  ? 'border-violet-400 text-violet-400'
                   : 'border-transparent text-zinc-400 hover:text-white'
               )}
             >
@@ -322,7 +322,7 @@ export function AssetInspectionDrawer({
               className={cn(
                 'px-4 py-3 text-xs font-semibold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap',
                 activeTab === 'hardening'
-                  ? 'border-cyan-400 text-cyan-400'
+                  ? 'border-violet-400 text-violet-400'
                   : 'border-transparent text-zinc-400 hover:text-white'
               )}
             >
@@ -341,7 +341,7 @@ export function AssetInspectionDrawer({
                 <div className="p-5 rounded-2xl bg-[#16161A] border border-white/10 space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
-                      <Cpu className="w-4 h-4 text-cyan-400" />
+                      <Cpu className="w-4 h-4 text-violet-400" />
                       Risk Calculation (service_weighted_v1)
                     </h3>
                     <ProvenanceBadge source="algorithm" label="Deterministic" />
@@ -378,7 +378,7 @@ export function AssetInspectionDrawer({
                 {/* Discovered Tech Stack */}
                 <div className="p-5 rounded-2xl bg-[#16161A] border border-white/10 space-y-3">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-cyan-400" />
+                    <Layers className="w-4 h-4 text-violet-400" />
                     Discovered Tech Stack
                   </h3>
                   {asset.technologies && asset.technologies.length > 0 ? (
@@ -402,7 +402,7 @@ export function AssetInspectionDrawer({
                       {asset.service_classes.map((sc, idx) => (
                         <div key={idx} className="flex items-center justify-between text-xs font-mono p-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05]">
                           <span className="text-zinc-200">{sc.label} ({sc.klass})</span>
-                          <span className="text-zinc-400">Weight: <strong className="text-cyan-400">{sc.weight}</strong></span>
+                          <span className="text-zinc-400">Weight: <strong className="text-violet-400">{sc.weight}</strong></span>
                         </div>
                       ))}
                     </div>
@@ -431,7 +431,7 @@ export function AssetInspectionDrawer({
                               </Badge>
                             )}
                           </div>
-                          <span className="font-mono text-xs font-bold text-cyan-400">
+                          <span className="font-mono text-xs font-bold text-violet-400">
                             +{driver.contribution.toFixed(1)} pts
                           </span>
                         </div>
@@ -460,7 +460,7 @@ export function AssetInspectionDrawer({
                         <div className="flex items-center gap-3">
                           <span className="font-bold text-white w-16">{p.port}</span>
                           <span className="text-zinc-400 uppercase">{p.protocol || 'tcp'}</span>
-                          {p.service && <span className="text-cyan-400 font-semibold">{p.service}</span>}
+                          {p.service && <span className="text-violet-400 font-semibold">{p.service}</span>}
                         </div>
                         <div className="flex items-center gap-3">
                           {p.version && <span className="text-zinc-400 text-[11px]">{p.version}</span>}
@@ -487,10 +487,10 @@ export function AssetInspectionDrawer({
                     <div
                       key={v.id}
                       onClick={() => onSelectVuln && onSelectVuln(v)}
-                      className="p-4 rounded-xl bg-[#16161A] border border-white/10 hover:border-cyan-500/50 transition-colors cursor-pointer space-y-2 group"
+                      className="p-4 rounded-xl bg-[#16161A] border border-white/10 hover:border-violet-500/50 transition-colors cursor-pointer space-y-2 group"
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <h4 className="text-sm font-semibold text-white group-hover:text-cyan-400 transition-colors">
+                        <h4 className="text-sm font-semibold text-white group-hover:text-violet-400 transition-colors">
                           {v.title}
                         </h4>
                         <SeverityBadge severity={v.severity} />
@@ -526,7 +526,7 @@ export function AssetInspectionDrawer({
                     {/* Hardening Checklist Items */}
                     <div className="space-y-3">
                       <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
-                        <Lock className="w-4 h-4 text-cyan-400" />
+                        <Lock className="w-4 h-4 text-violet-400" />
                         Hardening Checklist ({hardeningData.checklist.length} Controls)
                       </h3>
                       <div className="space-y-2">
@@ -544,7 +544,7 @@ export function AssetInspectionDrawer({
                                 className={cn(
                                   'font-mono text-[10px] uppercase',
                                   item.priority === 'critical' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                                  item.priority === 'high' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
+                                  item.priority === 'high' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
                                   'bg-blue-500/10 text-blue-400 border-blue-500/20'
                                 )}
                               >

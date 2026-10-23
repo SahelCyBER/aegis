@@ -39,8 +39,8 @@ function StatusPing() {
 
 const FIELD_CLASS =
   'w-full pl-9 pr-3 py-2.5 rounded-lg bg-background/80 border border-border/60 text-foreground ' +
-  'placeholder:text-muted-foreground/35 focus:outline-none focus:border-[#F97316]/60 ' +
-  'focus:ring-2 focus:ring-[#F97316]/15 transition-colors text-[13px]';
+  'placeholder:text-muted-foreground/35 focus:outline-none focus:border-[#F59E0B]/60 ' +
+  'focus:ring-2 focus:ring-[#F59E0B]/15 transition-colors text-[13px]';
 
 function LoginCard() {
   const router = useRouter();
@@ -140,7 +140,7 @@ function LoginCard() {
         className="pointer-events-none absolute -top-40 -left-40 h-[420px] w-[420px] rounded-full blur-3xl opacity-30"
         style={{
           background:
-            'radial-gradient(circle at center, #F97316 0%, rgba(249,115,22,0.2) 40%, transparent 70%)',
+            'radial-gradient(circle at center, #F59E0B 0%, rgba(245,158,11,0.2) 40%, transparent 70%)',
         }}
         aria-hidden
       />
@@ -159,10 +159,13 @@ function LoginCard() {
         {/* Brand block */}
         <div className="mb-7 flex flex-col items-center text-center">
           <div className="flex items-center gap-2.5 mb-4">
-            <div className="grid place-items-center h-9 w-9 rounded-xl bg-[#F97316]/15 border border-[#F97316]/30 text-[#F97316]">
+            <div className="grid place-items-center h-9 w-9 rounded-xl bg-[#F59E0B]/15 border border-[#F59E0B]/30 text-[#F59E0B]">
               <ShieldCheck size={18} strokeWidth={2.25} />
             </div>
-            <span className="text-2xl font-semibold tracking-[-0.02em] text-foreground">AEGIS</span>
+            <div className="flex flex-col items-start leading-none">
+              <span className="text-2xl font-semibold tracking-[-0.02em] text-foreground">AEGIS</span>
+              <span className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--brand-text)]">Sahel CyBER</span>
+            </div>
           </div>
           <p className="text-[13px] text-muted-foreground/85 leading-snug max-w-[300px]">
             {mode === 'apikey'
@@ -198,7 +201,7 @@ function LoginCard() {
                   className={
                     'rounded-md py-1.5 text-[11px] font-mono uppercase tracking-[0.14em] transition-colors ' +
                     (active
-                      ? 'bg-[#F97316]/15 text-[#F97316] border border-[#F97316]/30'
+                      ? 'bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30'
                       : 'text-muted-foreground/70 border border-transparent hover:text-foreground')
                   }
                 >
@@ -307,7 +310,7 @@ function LoginCard() {
           <button
             type="submit"
             disabled={busy}
-            className="group w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg bg-[#F97316] hover:bg-[#F97316]/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-medium text-[13px] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F97316]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+            className="group w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg bg-[#F59E0B] hover:bg-[#F59E0B]/90 disabled:opacity-50 disabled:cursor-not-allowed text-black font-medium text-[13px] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F59E0B]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-card"
           >
             {busy ? (
               <>
@@ -372,7 +375,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-background grid place-items-center">
-          <div className="h-5 w-5 rounded-full border-2 border-border border-t-[#F97316] motion-safe:animate-spin" />
+          <div className="h-5 w-5 rounded-full border-2 border-border border-t-[#F59E0B] motion-safe:animate-spin" />
         </div>
       }
     >

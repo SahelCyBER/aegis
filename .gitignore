@@ -138,3 +138,6 @@ pi-deploy/*
 !pi-deploy/newsyslog/
 !pi-deploy/utils/
 !pi-deploy/web-server-logger.py
+
+# GeoIP lite downloades runtime (MaxMind/DB-IP), pas de source
+backend/app/data/dbip-*.csv

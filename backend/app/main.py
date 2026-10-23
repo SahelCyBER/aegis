@@ -1015,7 +1015,7 @@ async def health():
     from app.core.ai_mode import MODE as _ai_mode
     return {
         "status": "healthy",
-        "service": "cayde-6",
+        "service": "aegis-sahel-cyber",
         "version": __version__,
         "environment": settings.AEGIS_ENV,
         "ai_mode": _ai_mode.value,
@@ -1048,7 +1048,7 @@ async def api_health():
     from app.core.ai_mode import MODE as _ai_mode
     return {
         "status": "healthy",
-        "service": "cayde-6",
+        "service": "aegis-sahel-cyber",
         "version": __version__,
         "ai_mode": _ai_mode.value,
     }

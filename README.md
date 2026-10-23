@@ -1,6 +1,8 @@
 <div align="center">
 
-# AEGIS — Open-Source Autonomous Ransomware Defense and EDR Platform
+> **Fork Sahel CyBER.** Ce dépôt est une dérivation personnalisée de [alejadxr/AEGIS](https://github.com/alejadxr/AEGIS) aux couleurs Sahel CyBER (violet `#683EE5`, encre `#0A1233`, ambre `#F59E0B`). Il se lance **sans Docker** sur macOS (backend FastAPI + PostgreSQL + dashboard Next.js). Voir le guide de démarrage plus bas.
+
+# AEGIS · Sahel CyBER : plateforme open source de défense autonome rançongiciels et EDR
 
 ### Self-hosted. Deterministic-first. Offline-capable.
 
@@ -270,6 +272,34 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 # Frontend
 cd frontend && npm install && npm run build && npm start
 ```
+
+### Démarrage sans Docker sur macOS (fork Sahel CyBER, validé)
+
+Prérequis : Homebrew, PostgreSQL, Node. L'app exige **Python 3.12** (les roues `numpy<2`, `pydantic 2.10.4`, `scikit-learn` ne sont pas publiées pour 3.13+).
+
+```bash
+# 1. Prérequis
+brew install python@3.12
+brew services start postgresql@17
+
+# 2. Base de données
+/opt/homebrew/opt/postgresql@17/bin/psql -d postgres -c "CREATE ROLE aegis LOGIN PASSWORD 'aegis_local_pw';"
+/opt/homebrew/opt/postgresql@17/bin/createdb -O aegis aegis
+
+# 3. Backend (venv 3.12 + deps, email-validator requis par un champ EmailStr)
+python3.12 -m venv .venv
+.venv/bin/pip install -r backend/requirements.txt
+.venv/bin/pip install "pydantic[email]"
+cp backend/.env.example backend/.env   # puis renseigner DATABASE_URL, AEGIS_ENV=development, bus mémoire
+(cd backend && ../.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000)
+
+# 4. Frontend (dashboard sur 3007)
+cd frontend && npm install && npm run build && npx next start -p 3007
+```
+
+Les tables se créent au premier démarrage (`Base.metadata.create_all`) et un compte admin est amorcé depuis `AEGIS_ADMIN_PASSWORD`. Par défaut : pare-feu passif (NoopFirewall), honeypots SSH `:2222` et HTTP `:8888`, DoS en mode `monitor`. Ne pas activer `AEGIS_REAL_FW` ni `AEGIS_DOS_MODE=active` sur un poste non maîtrisé.
+
+> **Licence AGPL-3.0** : fork et modification libres, mais si le service est exposed à des tiers, la source modifiée doit leur être fournie.
 
 ### Environment Variables
 

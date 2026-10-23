@@ -121,7 +121,7 @@ export function VerdictLine({
           className={cn(
             'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold uppercase tracking-wider border shadow-sm',
             isThreatFree
-              ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
+              ? 'bg-violet-500/10 text-violet-400 border-violet-500/20'
               : pendingActions > 0
               ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
               : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
@@ -131,7 +131,7 @@ export function VerdictLine({
             className={cn(
               'h-1.5 w-1.5 rounded-full animate-pulse',
               isThreatFree
-                ? 'bg-cyan-400'
+                ? 'bg-violet-400'
                 : pendingActions > 0
                 ? 'bg-amber-400'
                 : 'bg-rose-400'

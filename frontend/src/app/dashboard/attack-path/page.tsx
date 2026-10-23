@@ -74,7 +74,7 @@ function riskLabel(score: number): string {
 
 function riskGlow(score: number): string {
   if (score >= 9) return 'drop-shadow(0 0 8px rgba(239,68,68,0.5))';
-  if (score >= 7) return 'drop-shadow(0 0 6px rgba(249,115,22,0.4))';
+  if (score >= 7) return 'drop-shadow(0 0 6px rgba(245,158,11,0.4))';
   if (score >= 4) return 'drop-shadow(0 0 4px rgba(234,179,8,0.3))';
   return 'drop-shadow(0 0 4px rgba(34,197,94,0.3))';
 }

@@ -212,7 +212,7 @@ export default function SetupWizard() {
 
   const reportBackendDown = (retry: () => void) => {
     setBackendError(
-      `Cannot reach AEGIS API at ${API_BASE}. Make sure cayde6-api is running.`
+      `Cannot reach AEGIS API at ${API_BASE}. Make sure the AEGIS backend is running.`
     );
     retryActionRef.current = retry;
   };
@@ -762,10 +762,10 @@ export default function SetupWizard() {
     <div className="min-h-screen bg-[#09090B] flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans">
       {/* Background glows */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(34,211,238,0.04) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.04) 0%, transparent 70%)' }}
       />
       <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(249,115,22,0.03) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.03) 0%, transparent 70%)' }}
       />
 
       <div className={`relative w-full max-w-2xl z-10 transition-all duration-700 ease-out ${
@@ -1679,7 +1679,7 @@ export default function SetupWizard() {
 
         {/* Footer */}
         <p className="text-center text-xs text-zinc-700 mt-8">
-          AEGIS Defense Platform &middot; v{process.env.NEXT_PUBLIC_AEGIS_VERSION || '1.6.2'}
+          AEGIS Defense Platform · Sahel CyBER &middot; v{process.env.NEXT_PUBLIC_AEGIS_VERSION || '1.6.2'}
         </p>
       </div>
 

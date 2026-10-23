@@ -46,9 +46,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://aegis.somoswilab.com'),
-  title: 'AEGIS | Open-Source Ransomware Defense and EDR Platform',
-  description: 'Self-hosted autonomous defense platform. Detects ransomware, lateral movement, and intrusions in <1 ms with 134 Sigma rules. Offline-capable. No cloud AI required. Free, AGPL-3.0.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3007'),
+  title: 'AEGIS · Sahel CyBER | Defense ranconiciels et EDR autonome',
+  description: 'Plateforme de defense autonome auto-hebergee, edition Sahel CyBER. Detecte ranconiciels, mouvement lateral et intrusions en <1 ms avec 163 regles Sigma. Fonctionne hors ligne, sans IA cloud. Libre, AGPL-3.0.',
   keywords: [
     'open source EDR',
     'self-hosted ransomware defense',
@@ -61,27 +61,27 @@ export const metadata: Metadata = {
     'Sigma rules',
     'autonomous incident response',
   ],
-  authors: [{ name: 'AEGIS Contributors' }],
+  authors: [{ name: 'Sahel CyBER' }],
   appleWebApp: { capable: true, statusBarStyle: 'default', title: 'AEGIS' },
   openGraph: {
     type: 'website',
-    siteName: 'AEGIS',
-    title: 'AEGIS — Open-Source Ransomware Defense and EDR Platform',
-    description: 'Self-hosted. Deterministic-first. Detects ransomware in <1 ms with 134 Sigma rules. Offline-capable. Free, AGPL-3.0.',
-    url: 'https://github.com/alejadxr/AEGIS',
+    siteName: 'Sahel CyBER',
+    title: 'AEGIS · Sahel CyBER | Defense ranconiciels et EDR autonome',
+    description: 'Auto-hebergee. Deterministe d\'abord. Detecte les ranconiciels en <1 ms avec 163 regles Sigma. Hors ligne. Libre, AGPL-3.0.',
+    url: 'https://github.com/SahelCyBER/aegis',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'AEGIS — Autonomous Defense Platform',
+        alt: 'AEGIS Sahel CyBER | Plateforme de defense autonome',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AEGIS — Open-Source Ransomware Defense and EDR Platform',
-    description: 'Self-hosted. Deterministic-first. Detects ransomware in <1 ms. 134 Sigma rules. Offline-capable. Free, AGPL-3.0.',
+    title: 'AEGIS · Sahel CyBER | Defense ranconiciels et EDR autonome',
+    description: 'Auto-hebergee. Deterministe d\'abord. Detecte les ranconiciels en <1 ms. 163 regles Sigma. Hors ligne. Libre, AGPL-3.0.',
     images: ['/og-image.png'],
   },
   robots: {

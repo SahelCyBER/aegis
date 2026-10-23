@@ -535,7 +535,7 @@ export default function ResponsePage() {
                         const toneClass: Record<string, string> = {
                           red: 'bg-red-500/10 text-red-400 border-red-500/30',
                           amber: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-                          cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+                          cyan: 'bg-violet-500/10 text-violet-400 border-violet-500/30',
                           muted: 'bg-muted/40 text-muted-foreground border-border',
                         };
                         const locParts = [intel.city, intel.region, intel.country].filter(Boolean);

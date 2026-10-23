@@ -102,14 +102,14 @@ interface ScanItem {
 }
 
 const trendChartConfig = {
-  vulns: { label: 'Vulnerabilities', color: '#22D3EE' },
+  vulns: { label: 'Vulnerabilities', color: '#A78BFA' },
 } satisfies ChartConfig;
 
 const severityChartConfig = {
   Critical: { label: 'Critical', color: 'var(--danger, #EF4444)' },
-  High:     { label: 'High',     color: '#F97316' },
+  High:     { label: 'High',     color: '#F59E0B' },
   Medium:   { label: 'Medium',   color: '#F59E0B' },
-  Low:      { label: 'Low',      color: '#22D3EE' },
+  Low:      { label: 'Low',      color: '#A78BFA' },
 } satisfies ChartConfig;
 
 const typeIcons: Record<string, typeof Server> = {
@@ -122,7 +122,7 @@ const typeIcons: Record<string, typeof Server> = {
 
 function riskColor(score: number): string {
   if (score >= 8) return 'text-[var(--danger)] font-bold';
-  if (score >= 6) return 'text-[#F97316] font-bold';
+  if (score >= 6) return 'text-[#F59E0B] font-bold';
   if (score >= 4) return 'text-[var(--warning)] font-bold';
   return 'text-[var(--success)] font-semibold';
 }
@@ -142,9 +142,9 @@ function buildSeverityDist(vulns: VulnRow[]) {
   });
   const colorMap: Record<string, string> = {
     Critical: 'var(--danger, #EF4444)',
-    High:     '#F97316',
+    High:     '#F59E0B',
     Medium:   '#F59E0B',
-    Low:      '#22D3EE',
+    Low:      '#A78BFA',
   };
   return Object.entries(counts)
     .filter(([, v]) => v > 0)
@@ -364,7 +364,7 @@ export default function SurfacePage() {
         const Icon = typeIcons[row.asset_type] || Server;
         return (
           <div className="flex items-center gap-2.5">
-            <div className="p-1.5 rounded-lg bg-white/[0.04] text-cyan-400">
+            <div className="p-1.5 rounded-lg bg-white/[0.04] text-violet-400">
               <Icon className="w-3.5 h-3.5" />
             </div>
             <span className="font-mono text-foreground font-semibold text-[13px]">
@@ -514,7 +514,7 @@ export default function SurfacePage() {
               Command Center — Attack Surface
             </h1>
             {hasActiveScan && (
-              <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono animate-pulse">
+              <Badge className="bg-violet-500/10 text-violet-400 border border-violet-500/20 font-mono animate-pulse">
                 Scan Active
               </Badge>
             )}
@@ -526,7 +526,7 @@ export default function SurfacePage() {
 
         <Button
           onClick={() => setShowScanModal(true)}
-          className="bg-[#22D3EE] hover:bg-[#22D3EE]/90 text-black font-semibold gap-2 shadow-[0_0_20px_rgba(34,211,238,0.2)]"
+          className="bg-[#A78BFA] hover:bg-[#A78BFA]/90 text-black font-semibold gap-2 shadow-[0_0_20px_rgba(167,139,250,0.2)]"
         >
           <Radar01Icon size={16} />
           <span>Launch Scan</span>
@@ -535,13 +535,13 @@ export default function SurfacePage() {
 
       {/* R1: Live Scan Progress HUD Widget */}
       {runningScan && (
-        <div className="p-4 rounded-2xl bg-card border border-cyan-500/40 shadow-[0_0_25px_rgba(34,211,238,0.1)] flex items-center justify-between gap-4 flex-wrap animate-fade-in">
+        <div className="p-4 rounded-2xl bg-card border border-violet-500/40 shadow-[0_0_25px_rgba(167,139,250,0.1)] flex items-center justify-between gap-4 flex-wrap animate-fade-in">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 animate-spin">
+            <div className="p-2 rounded-xl bg-violet-500/10 text-violet-400 animate-spin">
               <RefreshCw className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-cyan-400 font-outfit flex items-center gap-2">
+              <div className="text-xs font-bold uppercase tracking-wider text-violet-400 font-outfit flex items-center gap-2">
                 Active Scan in Progress — {runningScan.target}
               </div>
               <div className="text-xs font-mono text-muted-foreground mt-0.5">
@@ -553,11 +553,11 @@ export default function SurfacePage() {
           <div className="flex items-center gap-4 w-full sm:w-64">
             <div className="flex-1 bg-white/[0.06] h-2 rounded-full overflow-hidden">
               <div
-                className="bg-[#22D3EE] h-full transition-all duration-500"
+                className="bg-[#A78BFA] h-full transition-all duration-500"
                 style={{ width: `${runningScan.progress || 50}%` }}
               />
             </div>
-            <span className="font-mono text-xs font-bold text-cyan-400">
+            <span className="font-mono text-xs font-bold text-violet-400">
               {runningScan.progress || 50}%
             </span>
           </div>
@@ -619,14 +619,14 @@ export default function SurfacePage() {
                 <AreaChart data={trendData}>
                   <defs>
                     <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#22D3EE" stopOpacity={0.25} />
-                      <stop offset="100%" stopColor="#22D3EE" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#A78BFA" stopOpacity={0.25} />
+                      <stop offset="100%" stopColor="#A78BFA" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="date" tick={{ fontSize: 11, fontFamily: 'Azeret Mono' }} tickLine={false} />
                   <YAxis tick={{ fontSize: 11, fontFamily: 'Azeret Mono' }} axisLine={false} tickLine={false} />
                   <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
-                  <Area type="monotone" dataKey="vulns" stroke="#22D3EE" fill="url(#cyanGrad)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="vulns" stroke="#A78BFA" fill="url(#cyanGrad)" strokeWidth={2} />
                 </AreaChart>
               </ChartContainer>
             )}
@@ -692,7 +692,7 @@ export default function SurfacePage() {
               placeholder="Search hostname, IP, CVE..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 font-mono text-xs bg-white/[0.02] border-white/[0.08] focus:border-[#22D3EE]"
+              className="pl-9 font-mono text-xs bg-white/[0.02] border-white/[0.08] focus:border-[#A78BFA]"
             />
           </div>
 
@@ -713,7 +713,7 @@ export default function SurfacePage() {
                   className={cn(
                     'px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors font-outfit',
                     assetTypeFilter === t.id
-                      ? 'bg-[#22D3EE]/10 text-[#22D3EE] border border-[#22D3EE]/30'
+                      ? 'bg-[#A78BFA]/10 text-[#A78BFA] border border-[#A78BFA]/30'
                       : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
@@ -726,7 +726,7 @@ export default function SurfacePage() {
             <select
               value={riskBandFilter}
               onChange={(e) => setRiskBandFilter(e.target.value)}
-              className="bg-card border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono text-foreground focus:outline-none focus:border-[#22D3EE]"
+              className="bg-card border border-white/[0.08] rounded-xl px-3 py-2 text-xs font-mono text-foreground focus:outline-none focus:border-[#A78BFA]"
             >
               <option value="all">All Risk Bands</option>
               <option value="critical">Critical (≥8.0)</option>
@@ -771,7 +771,7 @@ export default function SurfacePage() {
                   variant={severityFilter === s ? 'default' : 'ghost'}
                   className={cn(
                     'cursor-pointer capitalize font-mono text-xs py-1 px-3',
-                    severityFilter === s ? 'bg-[#22D3EE]/10 text-[#22D3EE] border border-[#22D3EE]/30' : 'text-muted-foreground hover:text-foreground'
+                    severityFilter === s ? 'bg-[#A78BFA]/10 text-[#A78BFA] border border-[#A78BFA]/30' : 'text-muted-foreground hover:text-foreground'
                   )}
                   onClick={() => setSeverityFilter(s)}
                 >
@@ -865,7 +865,7 @@ export default function SurfacePage() {
             <select
               value={scanType}
               onChange={(e) => setScanType(e.target.value)}
-              className="w-full bg-card border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[#22D3EE] font-mono"
+              className="w-full bg-card border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-[#A78BFA] font-mono"
             >
               <option value="full">Full Scan (Asset Discovery + Vulnerability Audit)</option>
               <option value="discovery">Discovery Scan (Host & Port Enumeration)</option>
@@ -879,7 +879,7 @@ export default function SurfacePage() {
             <Button
               disabled={triggeringScan || !scanTarget.trim()}
               onClick={() => handleLaunchScan()}
-              className="bg-[#22D3EE] hover:bg-[#22D3EE]/90 text-black font-semibold gap-2"
+              className="bg-[#A78BFA] hover:bg-[#A78BFA]/90 text-black font-semibold gap-2"
             >
               <Radar01Icon size={16} />
               {triggeringScan ? 'Launching...' : 'Start Scan'}

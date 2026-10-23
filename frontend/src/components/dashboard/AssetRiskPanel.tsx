@@ -691,7 +691,7 @@ export function AssetRiskPanel({ assets, loading = false, error = false, onRetry
       as="section"
       aria-label="Attack surface"
       aria-busy={loading}
-      className="col-span-12 flex flex-col border border-border/80 bg-[color-mix(in_oklab,var(--card)_95%,transparent)] backdrop-blur-md relative rounded-2xl group transition-all duration-300 hover:border-cyan-500/20 overflow-hidden"
+      className="col-span-12 flex flex-col border border-border/80 bg-[color-mix(in_oklab,var(--card)_95%,transparent)] backdrop-blur-md relative rounded-2xl group transition-all duration-300 hover:border-violet-500/20 overflow-hidden"
     >
       {loading && (
         <span className="sr-only" role="status">
@@ -703,8 +703,8 @@ export function AssetRiskPanel({ assets, loading = false, error = false, onRetry
       <div className="flex items-center justify-between border-b border-border/80 bg-card/60 p-4 px-5 shrink-0">
         <div className="flex items-center gap-3">
           <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-violet-500" />
           </span>
           <div className="flex items-baseline gap-2.5">
             <h2 className="text-xs font-mono font-bold uppercase tracking-[0.18em] text-foreground">
@@ -720,7 +720,7 @@ export function AssetRiskPanel({ assets, loading = false, error = false, onRetry
 
         <a
           href="/dashboard/surface"
-          className="flex items-center gap-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-[11px] font-mono font-semibold tracking-wider text-cyan-400 transition-all hover:bg-cyan-500/20 hover:border-cyan-500/50"
+          className="flex items-center gap-1.5 rounded-lg border border-violet-500/30 bg-violet-500/10 px-3 py-1 text-[11px] font-mono font-semibold tracking-wider text-violet-400 transition-all hover:bg-violet-500/20 hover:border-violet-500/50"
         >
           ASM CONSOLE &rarr;
         </a>

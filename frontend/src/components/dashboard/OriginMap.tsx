@@ -597,7 +597,7 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
       variant="default"
       padding="none"
       aria-label="Threat origin map"
-      className="col-span-12 flex flex-col border border-border/80 bg-[color-mix(in_oklab,var(--card)_95%,transparent)] backdrop-blur-md relative rounded-2xl group transition-all duration-300 hover:border-cyan-500/20 min-[820px]:flex-row min-[820px]:h-[480px] overflow-hidden"
+      className="col-span-12 flex flex-col border border-border/80 bg-[color-mix(in_oklab,var(--card)_95%,transparent)] backdrop-blur-md relative rounded-2xl group transition-all duration-300 hover:border-violet-500/20 min-[820px]:flex-row min-[820px]:h-[480px] overflow-hidden"
     >
       {/* ═══ MOBILE SEGMENTED CONTROL TAB BAR ═══ */}
       <div className="flex items-center justify-between border-b border-border bg-card/70 p-2 min-[820px]:hidden shrink-0">
@@ -607,7 +607,7 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
           className={cn(
             'flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-md font-mono text-[11px] font-semibold tracking-wider transition-all',
             mobileTab === 'map'
-              ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 shadow-sm'
+              ? 'bg-violet-500/15 text-violet-400 border border-violet-500/30 shadow-sm'
               : 'text-muted-foreground hover:text-foreground'
           )}
         >
@@ -620,7 +620,7 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
           className={cn(
             'flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-md font-mono text-[11px] font-semibold tracking-wider transition-all',
             mobileTab === 'list'
-              ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 shadow-sm'
+              ? 'bg-violet-500/15 text-violet-400 border border-violet-500/30 shadow-sm'
               : 'text-muted-foreground hover:text-foreground'
           )}
         >
@@ -819,10 +819,10 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
         <div className="pointer-events-none absolute top-2 left-2 sm:top-4 sm:left-4 z-[2] max-w-[85%] sm:max-w-[75%] rounded-lg sm:rounded-xl border border-white/10 bg-[color-mix(in_oklab,var(--card)_85%,transparent)] p-1.5 px-2 sm:p-3 backdrop-blur-md">
           <div className="flex items-center gap-1.5 sm:gap-2">
             <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-cyan-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-violet-500" />
             </span>
-            <p className="text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-[0.12em] sm:tracking-[0.16em] text-cyan-400">
+            <p className="text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-[0.12em] sm:tracking-[0.16em] text-violet-400">
               RADAR TELEMETRY
             </p>
           </div>
@@ -837,7 +837,7 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
               <span className="font-mono text-xs sm:text-sm font-bold text-foreground tabular-nums">{sorted.length}</span>
               <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted-foreground">COUNTRIES</span>
               <span className="text-muted-foreground/40 font-mono text-xs">·</span>
-              <span className="font-mono text-xs sm:text-sm font-bold text-cyan-400 tabular-nums">{totalAttacks.toLocaleString()}</span>
+              <span className="font-mono text-xs sm:text-sm font-bold text-violet-400 tabular-nums">{totalAttacks.toLocaleString()}</span>
               <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted-foreground">ATTACKS</span>
               {unmappedCount > 0 && <span className="hidden sm:inline text-[10px] font-mono text-muted-foreground/70">({unmappedCount} UNMAPPED)</span>}
             </div>
@@ -924,12 +924,12 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
       >
         <div className="mb-3 shrink-0 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Radio size={14} className="text-cyan-400 animate-pulse" />
+            <Radio size={14} className="text-violet-400 animate-pulse" />
             <h3 className="text-[11px] font-mono font-bold uppercase tracking-[0.14em] text-foreground">
               ORIGIN INTELLIGENCE
             </h3>
           </div>
-          <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 font-mono text-[10px] font-semibold text-cyan-400">
+          <span className="rounded-full bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 font-mono text-[10px] font-semibold text-violet-400">
             {filteredSorted.length} SOURCED
           </span>
         </div>
@@ -943,7 +943,7 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
               placeholder="Filter country or ASN..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-md border border-border/80 bg-background/50 pl-7 pr-2.5 py-1 text-[11px] font-mono text-foreground placeholder:text-muted-foreground/50 focus:border-cyan-500/50 focus:outline-none transition-colors"
+              className="w-full rounded-md border border-border/80 bg-background/50 pl-7 pr-2.5 py-1 text-[11px] font-mono text-foreground placeholder:text-muted-foreground/50 focus:border-violet-500/50 focus:outline-none transition-colors"
             />
           </div>
         )}
@@ -1003,7 +1003,7 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
             <button
               type="button"
               onClick={() => setSearchTerm('')}
-              className="mt-2 font-mono text-[11px] text-cyan-400 hover:underline"
+              className="mt-2 font-mono text-[11px] text-violet-400 hover:underline"
             >
               Clear filter
             </button>
@@ -1037,13 +1037,13 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
                     className={cn(
                       'group/row flex w-full flex-col justify-center gap-1 rounded-lg border border-transparent px-2.5 py-1.5 text-left transition-all duration-200',
                       isSelected || isHovered
-                        ? 'bg-cyan-500/10 border-cyan-500/30 shadow-md'
+                        ? 'bg-violet-500/10 border-violet-500/30 shadow-md'
                         : 'hover:bg-white/[0.04] hover:border-white/10',
                       rowFocusRing,
                     )}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="w-5 font-mono text-[10px] font-bold text-muted-foreground/70 group-hover/row:text-cyan-400 transition-colors">
+                      <span className="w-5 font-mono text-[10px] font-bold text-muted-foreground/70 group-hover/row:text-violet-400 transition-colors">
                         #{String(i + 1).padStart(2, '0')}
                       </span>
                       <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono text-[11px] font-bold text-foreground">
@@ -1059,12 +1059,12 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
                       </span>
                       {isUplink && (
                         <span
-                          className="shrink-0 rounded px-1.5 py-[1px] font-mono text-[9px] font-bold uppercase tracking-wider text-orange-400 bg-orange-500/15 border border-orange-500/30"
+                          className="shrink-0 rounded px-1.5 py-[1px] font-mono text-[9px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/15 border border-amber-500/30"
                         >
                           UPLINK
                         </span>
                       )}
-                      <span className="font-mono tabular-nums text-[11px] font-bold text-cyan-400">
+                      <span className="font-mono tabular-nums text-[11px] font-bold text-violet-400">
                         {entry.count.toLocaleString()}
                       </span>
                     </div>
@@ -1073,7 +1073,7 @@ export function OriginMap({ data, homeAsn, loading = false, error = false, onRet
                     <div className="flex items-center gap-2 pl-7">
                       <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/10">
                         <div
-                          className="h-1 rounded-full bg-gradient-to-r from-cyan-500 via-amber-500 to-rose-500 transition-all duration-500"
+                          className="h-1 rounded-full bg-gradient-to-r from-violet-500 via-amber-500 to-rose-500 transition-all duration-500"
                           style={{ width: `${Math.max(barPct, 4)}%` }}
                         />
                       </div>
